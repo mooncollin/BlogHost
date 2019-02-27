@@ -1,0 +1,83 @@
+<html>
+<head>
+<style>
+header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;	 
+}
+nav {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:300px;
+    width:100px;
+    float:left;
+    padding:5px;	      
+}
+section {
+    width:350px;
+    float:left;
+    padding:10px;	 	 
+}
+footer {
+    background-color:black;
+    color:white;
+    clear:both;
+    text-align:center;
+    padding:5px;	 	 
+}
+</style>
+</head>
+
+<body>
+<header>
+<h1> Insert Data </h1>
+</header>
+
+<nav>
+<!---<a href="/GroupProject/login.html">login</a> <br>--->
+<a href="/BlogHost/login.html">Search Data</a> <br>
+</nav>
+
+<section>
+	<h1>Create Account</h1>
+	
+	<form action="AddUser" method="POST">
+	
+		User Name: <input type="text" name="userName" maxlength=50> <br />
+		First Name: <input type="text" name="firstName" maxlength=50> <br />
+		Last Name: <input type="text" name="lastName" maxlength=50> <br />
+		Password: <input type="text" name="userPass" maxlength=30> <br />
+		Age: <input type="text" name="age" maxlength=3> <br />
+		<img src="" height="50">
+		Picture:<input type="file" onchange="previewImage()" name="pic"><br>
+		
+		<input type="submit" value="Register" />
+	</form>
+	<script>
+   	function previewImage(){
+       var preview = document.querySelector('img');
+       var file    = document.querySelector('input[type=file]').files[0]; 
+       var reader  = new FileReader();
+
+       reader.onloadend = function () {
+           preview.src = reader.result;
+       }
+
+       if (file) {
+           reader.readAsDataURL(file); 
+       } else {
+           preview.src = "";
+       }
+  }
+
+  previewFile(); 
+  </script>
+</section>
+
+<footer>
+Copyright
+</footer>
+</body>
+</html>
