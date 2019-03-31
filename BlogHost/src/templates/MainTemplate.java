@@ -25,6 +25,11 @@ public class MainTemplate
 		return tmp;
 	}
 	
+	public Template getCurrentTemplate()
+	{
+		return tmp;
+	}
+	
 	private static CompoundElement createLink(String link, String name)
 	{
 		CompoundElement a = new CompoundElement("a");
