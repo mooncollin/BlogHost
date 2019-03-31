@@ -1,55 +1,88 @@
 package dbConnection;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
-public class DBConnection {
-   public static Connection connection = null;
+/**
+ * Class used for establishing a database connection with the information in a
+ * configuration file.
+ */
+public class DBConnection
+{
+	/**
+	 * The database connection.
+	 */
+	private static Connection connection = null;
 
-   public static void getDBConnection() {
-      System.out.println("-------- MySQL JDBC Connection Testing ------------");
-      try {
-         Class.forName("com.mysql.jdbc.Driver");
-      } catch (ClassNotFoundException e) {
-         System.out.println("Where is your MySQL JDBC Driver?");
-         e.printStackTrace();
-         return;
-      }
-      System.out.println("MySQL JDBC Driver Registered!");
+	/**
+	 * Gets the database connnection. If the database has not been connected yet, it
+	 * will connect, otherwise it will return the already connected connection.
+	 * 
+	 * @return a database connection
+	 * @throws ClassNotFoundException if the JDBC SQL driver library cannot be found
+	 */
+	public static Connection getDBConnection() throws ClassNotFoundException
+	{
+		if (connection != null)
+		{
+			return connection;
+		}
 
-      connection = null;
-      try {
-         UtilProp.loadProperty();
-         connection = DriverManager.getConnection(getURL(), getUserName(), getPassword());
-      } catch (Exception e) {
-         System.out.println("Connection Failed! Check output console");
-         e.printStackTrace();
-         return;
-      }
+		Class.forName("com.mysql.jdbc.Driver");
+		connection = null;
+		try
+		{
+			UtilProp.loadProperty();
+			connection = DriverManager.getConnection(getURL(), getUserName(), getPassword());
+		} catch (Exception e)
+		{
+		}
 
-      if (connection != null) {
-         System.out.println("You made it, take control your database now!");
-      } else {
-         System.out.println("Failed to make connection!");
-      }
-   }
+		return connection;
+	}
 
-   static String getURL() {
-      String url = UtilProp.getProp("url");
-      System.out.println("[DBG] URL: " + url);
-      return url;
-   }
+	/**
+	 * Attempts to close the current database connection if connected.
+	 */
+	public static void closeDBConnection()
+	{
+		if (connection != null)
+		{
+			try
+			{
+				connection.close();
+			} catch (SQLException e)
+			{
+			}
+			connection = null;
+		}
+	}
 
-   static String getUserName() {
-      String usr = UtilProp.getProp("user");
-      System.out.println("[DBG] URL: " + usr);
-      return usr;
-   }
+	/**
+	 * Gets the connection URL.
+	 * @return connection URL
+	 */
+	private static String getURL()
+	{
+		return UtilProp.getProp("url");
+	}
 
-   static String getPassword() {
-      String pwd = UtilProp.getProp("password");
-      System.out.println("[DBG] URL: " + pwd);
-      return pwd;
-   }
+	/**
+	 * Gets the connection user.
+	 * @return connection user
+	 */
+	private static String getUserName()
+	{
+		return UtilProp.getProp("user");
+	}
+
+	/**
+	 * Gets the connection password.
+	 * @return connection password 
+	 */
+	private static String getPassword()
+	{
+		return UtilProp.getProp("password");
+	}
 }
