@@ -17,10 +17,14 @@ public class MainTemplate
 	
 	public Template basicTemplate()
 	{
-		tmp.getHead().addStylesheet("style.css");
+		tmp.getHead().addStylesheet("css/bootstrap.min.css");
+		tmp.getHead().addStylesheet("css/style.css");
 		tmp.getBody().addElement(topBar());
 		tmp.getBody().addElement(form);
 		tmp.getBody().addElement(botBar());
+		tmp.getBody().addScript("js/jquery-3.3.1.min.js");
+		tmp.getBody().addScript("js/popper.min.js");
+		tmp.getBody().addScript("js/bootstrap.min.js");
 		
 		return tmp;
 	}
