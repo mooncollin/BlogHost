@@ -120,6 +120,7 @@ public class Site extends HttpServlet
     }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		postList.clear();
 		String page = request.getParameter("site");
 		if(page == null || page == "" ) {//|| !StringUtils.isStrictlyNumeric(page)) {
 			response.sendRedirect("/Error/");
