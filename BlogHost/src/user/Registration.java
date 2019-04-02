@@ -75,11 +75,10 @@ public class Registration extends HttpServlet
 		button.setAttribute("style", "float:left");
 		form.addElement(button);
 		
-		temp.getForm().setAttribute("style", "width: 15%; height: 30%;");
-		temp.getForm().addElement(form);
+		temp.getCurrentTemplate().getBody().addElement(form);
 		
 		response.setContentType("text/html");
-		response.getWriter().println(temp.basicTemplate());
+		response.getWriter().println(temp.getCurrentTemplate());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import html.CompoundElement;
 import templates.MainTemplate;
-import util.Template;
 
 @WebServlet("/About")
 public class About extends HttpServlet 
@@ -22,7 +21,6 @@ public class About extends HttpServlet
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		MainTemplate.createTmp();
 		String info = "<h1>About</h1><p>What kind of platform are ordinary users looking for to create their own blog? "
 				+ "Beginners will need a platform that can be easily customized and does not require coding skills. "
 				+ "If users just want to join communities dedicated to the specific topic of interest and share ideas, "
@@ -31,14 +29,18 @@ public class About extends HttpServlet
 				+ "blogging now, they may want to make money from it in the future. Users will need to choose a flexible "
 				+ "platform with the possibility of further growth.";
 		
-		Template temp = MainTemplate.basicTemplate();
-		CompoundElement div = new CompoundElement("div");
-		div.setData(info);
-		
-		temp.getBody().addElement(div);
+		MainTemplate temp = new MainTemplate();
+		CompoundElement container = new CompoundElement("div");
+		container.setAttribute("class", "container");
+		CompoundElement jumbotron = new CompoundElement("div");
+		container.setAttribute("class", "jumbotron");
+		container.addElement(jumbotron);
+		jumbotron.setData(info);
+	
+		temp.getCurrentTemplate().getBody().addElement(container);
 
 		response.setContentType("text/html");
-		response.getWriter().println(temp);
+		response.getWriter().println(temp.getCurrentTemplate());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 

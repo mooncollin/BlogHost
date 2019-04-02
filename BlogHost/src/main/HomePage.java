@@ -22,17 +22,19 @@ public class HomePage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		MainTemplate.createTmp();
-		Template temp = MainTemplate.basicTemplate();
-		CompoundElement div = MainTemplate.addElementWithSingleAttribute("div", "align", "center");
-		CompoundElement h1 = new CompoundElement("h1");
-		h1.setData("Welcome!");
+		MainTemplate temp = new MainTemplate();
 		
-		div.addElement(h1);
-		temp.getBody().addElement(div);
-
 		response.setContentType("text/html");
-		response.getWriter().println(temp);
+		
+		CompoundElement container = new CompoundElement("div");
+		container.setAttribute("class", "container");
+		CompoundElement jumbotron = new CompoundElement("div");
+		container.setAttribute("class", "jumbotron");
+		container.addElement(jumbotron);
+		jumbotron.setData("<center><h1>Welcome to BlogHost</h1></center>");
+		temp.getCurrentTemplate().getBody().addElement(container);
+		
+		response.getWriter().println(temp.getCurrentTemplate());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 

@@ -64,19 +64,16 @@ public class LogIn extends HttpServlet
 		buttons.addElement(login);
 		buttons.addElement(register);
 		
-
-		temp.getForm().setAttribute("style", "width: 15%; height: 30%;");
-		
 		body.addElement(log);
 		body.addElement(br);
 		body.addElement(inputPassword);
 		body.addElement(br);
 		body.addElement(buttons);
 		form.addElement(body);
-		temp.getForm().addElement(form);
-		
+		temp.getCurrentTemplate().getBody().addElement(form);
+
 		response.setContentType("text/html");
-		response.getWriter().println(temp.basicTemplate());
+		response.getWriter().println(temp.getCurrentTemplate());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
