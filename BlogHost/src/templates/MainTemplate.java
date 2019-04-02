@@ -17,7 +17,7 @@ public class MainTemplate
 		createForm();
 	}
 	
-	public Template basicTemplate()
+	public static Template basicTemplate()
 	{
 		tmp.getHead().addStylesheet("css/bootstrap.min.css");
 		tmp.getHead().addStylesheet("css/style.css");
@@ -173,7 +173,7 @@ public class MainTemplate
 		return elem;
 	}
 	
-	private static void createTmp()
+	public static void createTmp()
 	{
 		tmp = new Template();
 	}
