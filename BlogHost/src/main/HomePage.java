@@ -22,16 +22,17 @@ public class HomePage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		MainTemplate temp = new MainTemplate();
-		CompoundElement div = temp.addElementWithSingleAttribute("div", "align", "center");
+		MainTemplate.createTmp();
+		Template temp = MainTemplate.basicTemplate();
+		CompoundElement div = MainTemplate.addElementWithSingleAttribute("div", "align", "center");
 		CompoundElement h1 = new CompoundElement("h1");
 		h1.setData("Welcome!");
 		
 		div.addElement(h1);
-		temp.getForm().addElement(div);
+		temp.getBody().addElement(div);
 
 		response.setContentType("text/html");
-		response.getWriter().println(temp.basicTemplate());
+		response.getWriter().println(temp);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
