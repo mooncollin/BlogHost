@@ -179,5 +179,15 @@ public class MainTemplate
 	{
 		return form;
 	}
-
+	
+	public CompoundElement createContainer()
+	{
+		CompoundElement container = new CompoundElement("div");
+		container.setAttribute("class", "container");
+		CompoundElement jumbotron = new CompoundElement("div");
+		container.setAttribute("class", "jumbotron");
+		container.addElement(jumbotron);
+		
+		return container;
+	}
 }
