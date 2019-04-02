@@ -23,5 +23,6 @@ public class DatabaseTests
 	{
 		Connection c = DBConnection.getDBConnection();
 		assertNotNull(c);
+		DBConnection.closeDBConnection();
 	}
 }
