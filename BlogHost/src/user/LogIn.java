@@ -70,15 +70,12 @@ public class LogIn extends HttpServlet
 		body.addElement(br);
 		body.addElement(buttons);
 		form.addElement(body);
-<<<<<<< HEAD
-		
+
 		
 		CompoundElement container = temp.createContainer();
 		container.addElement(form);
 		temp.getCurrentTemplate().getBody().addElement(container);
-=======
-		temp.getCurrentTemplate().getBody().addElement(form);
->>>>>>> master
+
 
 		response.setContentType("text/html");
 		response.getWriter().println(temp.getCurrentTemplate());

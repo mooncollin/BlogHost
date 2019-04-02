@@ -26,7 +26,7 @@ public class HomePage extends HttpServlet {
 		
 		response.setContentType("text/html");
 		
-<<<<<<< HEAD
+
 		/*CompoundElement container = new CompoundElement("div");
 		container.setAttribute("class", "container");
 		CompoundElement jumbotron = new CompoundElement("div");
@@ -34,14 +34,14 @@ public class HomePage extends HttpServlet {
 		container.addElement(jumbotron);*/
 		CompoundElement container = temp.createContainer();
 		container.setData("<center><h1>Welcome to BlogHost</h1></center>");
-=======
-		CompoundElement container = new CompoundElement("div");
+
+		/*CompoundElement container = new CompoundElement("div");
 		container.setAttribute("class", "container");
 		CompoundElement jumbotron = new CompoundElement("div");
 		container.setAttribute("class", "jumbotron");
-		container.addElement(jumbotron);
-		jumbotron.setData("<center><h1>Welcome to BlogHost</h1></center>");
->>>>>>> master
+		container.addElement(jumbotron);*/
+		container.setData("<center><h1>Welcome to BlogHost</h1></center>");
+
 		temp.getCurrentTemplate().getBody().addElement(container);
 		
 		response.getWriter().println(temp.getCurrentTemplate());
