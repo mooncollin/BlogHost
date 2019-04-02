@@ -29,57 +29,8 @@ body, html
 	float: right;
 }
 
-/*topbar*/
-.topnav 
+.container
 {
-  position: fixed;
-  width: 100%;
-  margin-top: -100px;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: rgb(49, 80, 80);
-}
-
-.topnav a 
-{
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 20px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.topnav a:hover 
-{
-  background-color: #5396a7;
-  color: black;
-}
-
-/*bottom navbar*/
-.botnav 
-{
-  margin-top: 100px;
-  margin-bottom: 0px;
-  overflow: hidden;
-  position: fixed;
-  bottom: 0;  
-  width: 100%;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: rgb(49, 80, 80);
-}
-
-.botnav a 
-{
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.botnav a:hover 
-{
-  background-color: #5396a7;
-  color: black;
+	position: relative;
+	margin-top: 50px;
 }

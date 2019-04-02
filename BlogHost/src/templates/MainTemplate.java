@@ -14,7 +14,7 @@ public class MainTemplate
 	public MainTemplate()
 	{
 		createTmp();
-		createForm();
+		basicTemplate();
 	}
 	
 	public static Template basicTemplate()
@@ -22,8 +22,7 @@ public class MainTemplate
 		tmp.getHead().addStylesheet("css/bootstrap.min.css");
 		tmp.getHead().addStylesheet("css/style.css");
 		tmp.getBody().addElement(topBar());
-		//tmp.getBody().addElement(form);
-		tmp.getBody().addElement(botBar());
+		tmp.getBody().addEndElement(botBar());
 		tmp.getBody().addScript("js/jquery-3.3.1.min.js");
 		tmp.getBody().addScript("js/popper.min.js");
 		tmp.getBody().addScript("js/bootstrap.min.js");
@@ -47,11 +46,6 @@ public class MainTemplate
 	
 	private static CompoundElement topBar()
 	{
-		/*topBar = new CompoundElement("div");
-		topBar.setAttribute("class", "topnav");
-		topBar.addElement(createLink("HomePage", "Home"));
-		topBar.addElement(createLink("LogIn", "Log In"));*/
-		
 		topBar = new CompoundElement("nav"); //
 		topBar.setAttribute("class",  "navbar navbar-expand-lg navbar-light bg-light");
 		CompoundElement brandLink = createLink("HomePage", "BlogHost"); //logo + link
@@ -85,10 +79,6 @@ public class MainTemplate
 		CompoundElement home = createListItem("nav-item active");		//home button
 		home.addElement(createLinkClass("HomePage", "Home", "nav-link"));
 		list.addElement(home);
-
-		CompoundElement logIn = createListItem("nav-item");				//another link
-		logIn.addElement(createLinkClass("#", "Link", "nav-link"));
-		list.addElement(logIn);
 		
 		CompoundElement dropdown = createListItem("nav-item dropdown");
 		list.addElement(dropdown);
@@ -106,14 +96,16 @@ public class MainTemplate
 		menu.setAttribute("aria-labelledby", "navbarDropdown");
 		dropdown.addElement(menu);
 		
-		menu.addElement(createLinkClass("#", "Log In", "dropdown-item"));	//first link in dropdown
-		menu.addElement(createLinkClass("#", "Register", "dropdown-item"));	//second link in dropdown
+		menu.addElement(createLinkClass("LogIn", "Log In", "dropdown-item"));			//first link in dropdown
+		menu.addElement(createLinkClass("Registration", "Register", "dropdown-item"));	//second link in dropdown
+		//menu.addElement(createLinkClass("Site", "Site", "dropdown-item"));				//site
 		
+		/*
 		CompoundElement divider = new CompoundElement("div");
 		divider.setAttribute("class", "dropdown-divider");
 		menu.addElement(divider);
 		
-		menu.addElement(createLinkClass("#", "Home", "dropdown-item"));		//third link after divider
+		menu.addElement(createLinkClass("#", "Home", "dropdown-item"));*/	//third link after divider
 
 		return topBar;
 	}
@@ -129,14 +121,6 @@ public class MainTemplate
 		return a;
 	}
 	
-	private static CompoundElement createSpan(String classValue, String data)
-	{
-		CompoundElement elem = new CompoundElement("span");
-		elem.setAttribute("class", classValue);
-		elem.setData(data);
-		
-		return elem;
-	}
 	
 	private static CompoundElement createListItem(String classValue)
 	{
@@ -148,10 +132,17 @@ public class MainTemplate
 	
 	private static CompoundElement botBar()
 	{
-		botBar = new CompoundElement("div");
+		/*botBar = new CompoundElement("div");
 		botBar.setAttribute("class", "botnav");
-		botBar.addElement(createLink("About", "About"));
+		botBar.addElement(createLink("About", "About"));*/
 		
+		
+		botBar = new CompoundElement("nav");
+		botBar.setAttribute("class", "navbar fixed-bottom navbar-light bg-light");
+		//botBar.addElement(createLink("BlogHost", "HomePage"));
+		botBar.addElement(createLink("About", "About"));
+		 // <a class="navbar-brand" href="#">Fixed bottom</a>
+
 		return botBar;
 	}
 	
