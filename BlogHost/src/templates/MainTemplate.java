@@ -165,7 +165,7 @@ public class MainTemplate
 		return botBar;
 	}
 	
-	public CompoundElement addElementWithSingleAttribute(String element, String attr, String attrData)
+	public static CompoundElement addElementWithSingleAttribute(String element, String attr, String attrData)
 	{
 		CompoundElement elem = new CompoundElement(element);
 		elem.setAttribute(attr, attrData);
