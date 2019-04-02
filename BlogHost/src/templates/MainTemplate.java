@@ -179,6 +179,7 @@ public class MainTemplate
 	{
 		return form;
 	}
+<<<<<<< HEAD
 	
 	public CompoundElement createContainer()
 	{
@@ -190,4 +191,7 @@ public class MainTemplate
 		
 		return container;
 	}
+=======
+
+>>>>>>> master
 }
