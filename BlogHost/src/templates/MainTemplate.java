@@ -15,6 +15,7 @@ public class MainTemplate
 	{
 		createTmp();
 		basicTemplate();
+		setBody();
 	}
 	
 	public static Template basicTemplate()
@@ -42,6 +43,73 @@ public class MainTemplate
 		a.setData(name);
 		
 		return a;
+	}
+	
+	private void setBody()
+	{
+
+	}
+	
+	private static CompoundElement loginForm()
+	{
+		CompoundElement container = new CompoundElement("div");
+
+		Form login = new Form();
+		container.addElement(login);
+		login.setAttribute("class", "login-form");
+		login.setAttribute("action", "HomePage");
+		
+		CompoundElement wrap = new CompoundElement("div");
+		container.addElement(wrap);
+		wrap.setAttribute("class", "row");
+		
+		CompoundElement input = new CompoundElement("div");
+		wrap.addElement(input);
+		input.setAttribute("class", "container");
+				
+		CompoundElement inputUsername = new CompoundElement("div");
+		input.addElement(inputUsername);
+		inputUsername.setAttribute("class", "input-group mb-3");
+		
+			Element username = new Element("input");
+			inputUsername.addElement(username);
+			username.setAttribute("type", "text");
+			username.setAttribute("class", "form-control");
+			username.setAttribute("placeholder", "Username");
+		
+		CompoundElement divide = new CompoundElement("div");
+		input.addElement(divide);
+		divide.setAttribute("class", "w-100 d-none d-md-block");	
+			
+		CompoundElement inputPassword = new CompoundElement("div");
+		input.addElement(inputPassword);
+		inputPassword.setAttribute("class", "input-group mb-3");
+		
+			Element password = new Element("input");
+			inputPassword.addElement(password);
+			password.setAttribute("type", "password");
+			password.setAttribute("class", "form-control");
+			password.setAttribute("placeholder", "Password");
+
+			
+		CompoundElement buttons = new CompoundElement("div");
+		wrap.addElement(buttons);
+		buttons.setAttribute("class", "container");
+
+		CompoundElement log_in = new CompoundElement("button");
+		buttons.addElement(log_in);
+		log_in.setAttribute("class", "btn btn-primary btn-md btn-block");
+		log_in.setAttribute("type", "submit");
+		log_in.setData("Login");
+	
+
+		CompoundElement sign_up = new CompoundElement("button");
+		buttons.addElement(sign_up);
+		sign_up.setAttribute("class", "btn btn-primary btn-md btn-block");
+		sign_up.setAttribute("type", "submit");
+		sign_up.setData("Signup");
+		
+		return container;
 	}
 	
 	private static CompoundElement topBar()
@@ -83,7 +151,7 @@ public class MainTemplate
 		CompoundElement dropdown = createListItem("nav-item dropdown");
 		list.addElement(dropdown);
 		
-		CompoundElement dropdownLink = createLinkClass("#", "Dropdown", "nav-link dropdown-toggle"); //dropdown
+		CompoundElement dropdownLink = createLinkClass("#", "User area", "nav-link dropdown-toggle"); //dropdown
 		dropdownLink.setAttribute("id", "navbarDropdown");
 		dropdownLink.setAttribute("role", "button");
 		dropdownLink.setAttribute("data-toggle", "dropdown");
@@ -95,18 +163,56 @@ public class MainTemplate
 		menu.setAttribute("class", "dropdown-menu");
 		menu.setAttribute("aria-labelledby", "navbarDropdown");
 		dropdown.addElement(menu);
+
 		
-		menu.addElement(createLinkClass("LogIn", "Log In", "dropdown-item"));			//first link in dropdown
-		menu.addElement(createLinkClass("Registration", "Register", "dropdown-item"));	//second link in dropdown
-		//menu.addElement(createLinkClass("Site", "Site", "dropdown-item"));				//site
+		/*modal*/
+		CompoundElement loginModal = new CompoundElement("button");
+		menu.addElement(loginModal);
+		loginModal.setAttribute("type", "button");
+		loginModal.setAttribute("class", "dropdown-item");
+		loginModal.setAttribute("data-toggle", "modal");
+		loginModal.setAttribute("data-target", "#myModal");
+		loginModal.setData("Login");
+		
+		CompoundElement myLoginModal = new CompoundElement("div");
+		topBar.addEndElement(myLoginModal);
+		
+		myLoginModal.setAttribute("id", "myModal");
+		myLoginModal.setAttribute("class", "modal fade");
+		myLoginModal.setAttribute("role", "dialog");
+		
+		CompoundElement modalDialog = new CompoundElement("div");
+		myLoginModal.addElement(modalDialog);
+		modalDialog.setAttribute("class", "modal-dialog");
+		
+		CompoundElement modalContent = new CompoundElement("div");
+		modalDialog.addElement(modalContent);
+		modalContent.setAttribute("class", "modal-content");
 		
 		/*
-		CompoundElement divider = new CompoundElement("div");
-		divider.setAttribute("class", "dropdown-divider");
-		menu.addElement(divider);
+		CompoundElement modalHeader = new CompoundElement("div");
+		modalContent.addElement(modalHeader);
+		modalHeader.setAttribute("class", "modal-header");
+		modalHeader.setData("");*/
 		
-		menu.addElement(createLinkClass("#", "Home", "dropdown-item"));*/	//third link after divider
+		CompoundElement modalExit = new CompoundElement("button");
+		//modalHeader.addElement(modalExit);
+		modalExit.setAttribute("type", "button");
+		modalExit.setAttribute("class", "close");
+		modalExit.setAttribute("data-dismiss", "modal");
+		modalExit.setData("&times;");
+		
 
+		
+		CompoundElement modalBody = new CompoundElement("div");
+		modalContent.addElement(modalBody);
+		modalBody.setAttribute("class", "modal-body");
+		modalBody.addElement(loginForm());
+		
+		/* end modal*/
+		
+		menu.addElement(createLinkClass("Registration", "Register", "dropdown-item"));	
+	
 		return topBar;
 	}
 	
@@ -132,16 +238,9 @@ public class MainTemplate
 	
 	private static CompoundElement botBar()
 	{
-		/*botBar = new CompoundElement("div");
-		botBar.setAttribute("class", "botnav");
-		botBar.addElement(createLink("About", "About"));*/
-		
-		
 		botBar = new CompoundElement("nav");
 		botBar.setAttribute("class", "navbar fixed-bottom navbar-light bg-light");
-		//botBar.addElement(createLink("BlogHost", "HomePage"));
 		botBar.addElement(createLink("About", "About"));
-		 // <a class="navbar-brand" href="#">Fixed bottom</a>
 
 		return botBar;
 	}
@@ -185,10 +284,11 @@ public class MainTemplate
 	{
 		CompoundElement container = new CompoundElement("div");
 		container.setAttribute("class", "container");
+		
 		CompoundElement jumbotron = new CompoundElement("div");
 		container.setAttribute("class", "jumbotron");
 		container.addElement(jumbotron);
-		
+
 		return container;
 	}
 }
