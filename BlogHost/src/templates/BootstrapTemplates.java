@@ -1,0 +1,79 @@
+package templates;
+
+import forms.Input;
+import html.CompoundElement;
+
+public class BootstrapTemplates
+{
+	public static CompoundElement formGroup(String labelText, Class<? extends Input> clazz, String helpText, String id)
+	{
+		CompoundElement outerDiv = new CompoundElement("div");
+		outerDiv.addClass("form-group");
+		
+		Input input;
+		
+		try
+		{
+			input = clazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e)
+		{
+			return null;
+		}
+		
+		input.addClass("form-control");
+		
+		if(id != null)
+		{
+			input.setAttribute("id", id);
+			
+		}
+		
+		if(labelText != null)
+		{
+			input.setLabelText(labelText);
+			outerDiv.addElement(input.getLabel());
+		}
+		
+		outerDiv.addElement(input);
+		
+		if(helpText != null)
+		{
+			CompoundElement help = new CompoundElement("small", helpText);
+			help.addClasses("form-text", "text-muted");
+			outerDiv.addElement(help);
+		}
+		
+		return outerDiv;
+	}
+	
+	public static CompoundElement formGroupTextarea(String labelText, String helpText, String id)
+	{
+		CompoundElement outerDiv = new CompoundElement("div");
+		outerDiv.addClass("form-group");
+		
+		CompoundElement textarea = new CompoundElement("textarea");
+		textarea.addClass("form-control");
+		
+		if(id != null)
+		{
+			textarea.setAttribute("id", id);
+		}
+		if(labelText != null)
+		{
+			CompoundElement label = new CompoundElement("label", labelText);
+			label.setAttribute("for", textarea.getAttribute("id"));
+			outerDiv.addElement(label);
+		}
+		
+		outerDiv.addElement(textarea);
+		
+		if(helpText != null)
+		{
+			CompoundElement help = new CompoundElement("small", helpText);
+			help.addClasses("form-text", "text-muted");
+			outerDiv.addElement(help);
+		}
+		
+		return outerDiv;
+	}
+}
