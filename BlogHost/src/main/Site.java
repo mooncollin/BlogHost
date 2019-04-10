@@ -161,8 +161,8 @@ public class Site extends HttpServlet
 		header.addElement(pSite);
 		header.addElement(pCreator);
 		header.addElement(pPosts);
-		//if(request.getSession().getAttribute("userSiteID") != null &&  (int)request.getSession().getAttribute("userSiteID") == siteId) {
-		if(true) {
+		if(request.getSession().getAttribute("userSiteID") != null &&  (int)request.getSession().getAttribute("userSiteID") == siteId) {
+
 		CompoundElement newPost = new CompoundElement("a", "Add New Post");
 			newPost.addClasses("btn", "btn-primary", "button");
 			newPost.setAttribute("href", "/BlogHost/NewPost");
