@@ -51,7 +51,7 @@ public class ChangeModelTests
 	public void BlogHostCreatorsChangeTest()
 	{
 		BlogHostCreators creator = new BlogHostCreators(
-				"a username", "George", "Bush", 45, "yeehaw", null, false);
+				"a username", "George", "Bush", "GeorgeBush@gmail.com", 45, "yeehaw", null, false);
 		InsertModelTests.inserter(creator);
 		assertFalse(creator.changed());
 		creator.setFirstName("billy");
