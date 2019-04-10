@@ -40,13 +40,7 @@ public class Site extends HttpServlet
     
     
     protected void getSiteInfo(int id) {
-    	Connection connection = null;
-	    	try {
-				connection = DBConnection.getDBConnection();
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+    	Connection connection = DBConnection.getDBConnection();
         String selectSQL = "Select * from BlogHostSites as s join BlogHostCreators as c on s.id = c.id where s.id = ?";
         PreparedStatement preparedStatement = null;
         try {
@@ -73,20 +67,14 @@ public class Site extends HttpServlet
             }
             try {
                 if (connection != null)
-                	DBConnection.closeDBConnection();
+                	connection.close();
             } catch (Exception se) {
                 se.printStackTrace();
              }
          }
     }
     protected void getSitePosts(int id) {
-    	Connection connection = null;
-    	try {
-			connection = DBConnection.getDBConnection();
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+    	Connection connection = DBConnection.getDBConnection();
     	String selectSQL = "Select * from BlogHostPosts where site_id = ?";
         PreparedStatement preparedStatement = null;
         try {
@@ -112,7 +100,7 @@ public class Site extends HttpServlet
             }
             try {
                 if (connection != null)
-                	DBConnection.closeDBConnection();
+                	connection.close();
              } catch (Exception se) {
                 se.printStackTrace();
              }

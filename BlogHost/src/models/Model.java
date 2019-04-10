@@ -29,22 +29,46 @@ abstract public class Model
 	protected boolean changed;
 	
 	/**
-	 * Retrieves a list of models from the configured database of the given
-	 * database class given.
-	 * @param clazz the class of the schema from the database
-	 * @return list of database model objects
+	 * Retrieves all rows of the given database schema class name.
+	 * @param clazz class that represents a database schema
+	 * @return list of models
 	 */
-	public static List<Model> getAll(Class<? extends Model> clazz)
+	public static <T extends Model> List<T> getAll(Class<T> clazz)
+	{
+		return getAll(clazz, null);
+	}
+	
+	/**
+	 * Retrieves all rows of the given database schema class name, with
+	 * the given filter. This will automatically add 'where' in the SQL,
+	 * so the given filter is the actual boolean expressions.
+	 * @param clazz class that represents a database schema
+	 * @param filter string that contains what would be after 'where'
+	 * @param inserts any data to be inserted into '?' in the filter
+	 * @return list of models
+	 */
+	public static <T extends Model> List<T> getAll(Class<T> clazz, String filter, Object... inserts)
 	{
 		Connection connection = null;
 		String sql = "select * from " + clazz.getSimpleName();
-		List<Model> models;
+		if(filter != null)
+		{
+			sql += " where " + filter;
+		}
+		List<T> models;
 		try
 		{
 			connection = DBConnection.getDBConnection();
 			PreparedStatement statement = connection.prepareStatement(sql);
+			if(filter != null)
+			{
+				for(int i = 0; i < inserts.length; i++)
+				{
+					statement.setObject(i+1, inserts[i]);
+				}
+			}
 			ResultSet results = statement.executeQuery();
-			models = new ArrayList<Model>(results.getFetchSize());
+			models = new ArrayList<T>(results.getFetchSize());
 			ResultSetMetaData metaData = results.getMetaData();
 			while(results.next())
 			{
@@ -60,12 +84,17 @@ abstract public class Model
 				
 				models.add(clazz.getConstructor(Map.class).newInstance(columnToValue));
 			}
-		} catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
+		} catch (Exception e)
 		{
 			return null;
 		}
 		
-		DBConnection.closeDBConnection();
+		try
+		{
+			connection.close();
+		} catch (SQLException e)
+		{
+		}
 		return models;
 	}
 	
@@ -149,20 +178,21 @@ abstract public class Model
 		boolean success = false;
 		if(changed)
 		{
-			try
+			Connection connection = DBConnection.getDBConnection();
+			if(connection != null)
 			{
-				Connection connection = DBConnection.getDBConnection();
-				success = commit(connection);
-				if(success)
+				try
 				{
-					changed = false;
+					
+					success = commit(connection);
+					if(success)
+					{
+						changed = false;
+					}
+					connection.close();
+				} catch (SQLException e)
+				{
 				}
-			} catch (ClassNotFoundException | SQLException e)
-			{
-			}
-			finally
-			{
-				DBConnection.closeDBConnection();
 			}
 		}
 		
@@ -185,20 +215,20 @@ abstract public class Model
 	public boolean delete()
 	{
 		boolean success = false;
-		try
+		Connection connection = DBConnection.getDBConnection();
+		if(connection != null)
 		{
-			Connection connection = DBConnection.getDBConnection();
-			success = delete(connection);
-			if(success)
+			try
 			{
-				changed = true;
+				success = delete(connection);
+				if(success)
+				{
+					changed = true;
+				}
+				connection.close();
+			} catch (SQLException e)
+			{
 			}
-		} catch (ClassNotFoundException | SQLException e)
-		{
-		}
-		finally
-		{
-			DBConnection.closeDBConnection();
 		}
 		
 		return success;
