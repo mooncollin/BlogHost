@@ -2,23 +2,17 @@ package models;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.jmx.snmp.Timestamp;
-
 import dbConnection.DBConnection;
-import forms.Date;
-import forms.Time;
 
 /**
  * This class is the base for all database schemas. It has helper functions
@@ -33,58 +27,6 @@ abstract public class Model
 	 * Whether this object's attributes have changed for commiting.
 	 */
 	protected boolean changed;
-	
-	public static <T> int classToSQLType(Class<T> clazz)
-	{
-		int type = Types.VARCHAR;
-		
-		if(clazz.equals(String.class))
-		{
-			type = Types.VARCHAR;
-		}
-		else if(clazz.equals(BigInteger.class) || clazz.equals(Long.class) || clazz.equals(long.class))
-		{
-			type = Types.BIGINT;
-		}
-		else if(clazz.equals(Boolean.class) || clazz.equals(boolean.class))
-		{
-			type = Types.BOOLEAN;
-		}
-		else if(clazz.equals(Integer.class) || clazz.equals(int.class))
-		{
-			type = Types.INTEGER;
-		}
-		else if(clazz.equals(Float.class) || clazz.equals(float.class))
-		{
-			type = Types.FLOAT;
-		}
-		else if(clazz.equals(Double.class) || clazz.equals(double.class))
-		{
-			type = Types.DOUBLE;
-		}
-		else if(clazz.equals(byte[].class) || clazz.equals(Byte[].class))
-		{
-			type = Types.BINARY;
-		}
-		else if(clazz.equals(Byte.class) || clazz.equals(byte.class))
-		{
-			type = Types.BINARY;
-		}
-		else if(clazz.equals(Date.class))
-		{
-			type = Types.DATE;
-		}
-		else if(clazz.equals(Time.class))
-		{
-			type = Types.TIME;
-		}
-		else if(clazz.equals(Timestamp.class))
-		{
-			type = Types.TIMESTAMP;
-		}
-		
-		return type;
-	}
 	
 	/**
 	 * Retrieves all rows of the given database schema class name.
@@ -122,7 +64,7 @@ abstract public class Model
 			{
 				for(int i = 0; i < inserts.length; i++)
 				{
-					statement.setObject(i+1, inserts[i], Model.classToSQLType(inserts[i].getClass()));
+					statement.setObject(i+1, inserts[i]);
 				}
 			}
 			ResultSet results = statement.executeQuery();
