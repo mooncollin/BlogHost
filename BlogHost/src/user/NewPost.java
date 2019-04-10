@@ -76,6 +76,12 @@ public class NewPost extends HttpServlet
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		Object userSiteID = request.getSession().getAttribute("userSiteId");
+		if(userSiteID == null)
+		{
+			response.sendRedirect("/BlogHost/HomePage");
+			return;
+		}
 		Template template = new MainTemplate().getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
 		container.addClasses("container", "mt-5");
@@ -119,7 +125,7 @@ public class NewPost extends HttpServlet
 			BlogHostPosts newPost = new BlogHostPosts((Integer) userSiteID, title, post, picture, time, time);
 			if(newPost.commit())
 			{
-				response.sendRedirect("/BlogHost/HomePage");
+				response.sendRedirect("/BlogHost/Site?site="+(Integer) userSiteID);
 				return;
 			}
 			else
