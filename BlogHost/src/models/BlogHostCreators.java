@@ -22,6 +22,7 @@ final public class BlogHostCreators extends Model
 	private String user_name;
 	private String first_name;
 	private String last_name;
+	private String email;
 	private Integer age;
 	private String password;
 	private byte[] profile_picture;
@@ -44,6 +45,7 @@ final public class BlogHostCreators extends Model
 			columnParameters.put("user_name", BlogHostCreators.class.getMethod("setUserName", String.class));
 			columnParameters.put("first_name", BlogHostCreators.class.getMethod("setFirstName", String.class));
 			columnParameters.put("last_name", BlogHostCreators.class.getMethod("setLastName", String.class));
+			columnParameters.put("email", BlogHostCreators.class.getMethod("setEmail", String.class));
 			columnParameters.put("age", BlogHostCreators.class.getMethod("setAge", Integer.class));
 			columnParameters.put("password", BlogHostCreators.class.getMethod("setPassword", String.class));
 			columnParameters.put("profile_picture", BlogHostCreators.class.getMethod("setProfilePicture", byte[].class));
@@ -65,13 +67,14 @@ final public class BlogHostCreators extends Model
 	 * @param admin
 	 */
 	public BlogHostCreators(String user_name, String first_name,
-			String last_name, Integer age, String password, byte[] profile_picture,
+			String last_name, String email, Integer age, String password, byte[] profile_picture,
 			Boolean admin)
 	{
 		setID(-1);
 		setUserName(user_name);
 		setFirstName(first_name);
 		setLastName(last_name);
+		setEmail(email);
 		setAge(age);
 		setPassword(password);
 		setProfilePicture(profile_picture);
@@ -122,6 +125,15 @@ final public class BlogHostCreators extends Model
 	public String getLastName()
 	{
 		return last_name;
+	}
+	
+	/**
+	 * Gets the email of this row.
+	 * @return email
+	 */
+	public String getEmail()
+	{
+		return email;
 	}
 	
 	/**
@@ -212,6 +224,19 @@ final public class BlogHostCreators extends Model
 		{
 			changed = true;
 			this.last_name = last_name;
+		}
+	}
+	
+	/**
+	 * Sets the email of this row.
+	 * @param email Email
+	 */
+	public void setEmail(String email)
+	{
+		if(checkVariable(this.email, email))
+		{
+			changed = true;
+			this.email = email;
 		}
 	}
 	
