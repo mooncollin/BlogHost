@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -42,6 +43,7 @@ public class Site extends HttpServlet
     
     
     protected void getSiteInfo(int id) {
+    	postList.clear();
     	Connection connection = DBConnection.getDBConnection();
         String selectSQL = "Select * from BlogHostSites as s join BlogHostCreators as c on s.id = c.id where s.id = ?";
         PreparedStatement preparedStatement = null;
@@ -77,6 +79,7 @@ public class Site extends HttpServlet
          }
     }
     protected void getSitePosts(int id) {
+    	postList.clear();
     	Connection connection = DBConnection.getDBConnection();
     	String selectSQL = "Select * from BlogHostPosts where site_id = ?";
         PreparedStatement preparedStatement = null;
@@ -124,6 +127,7 @@ public class Site extends HttpServlet
 			response.sendRedirect("/Error/");
 			return;
 		}
+		postList.clear();
 		getSitePosts(Integer.parseInt(request.getParameter("site")));
 		//MainTemplate.createTmp();
 		//Template temp = MainTemplate.basicTemplate();
@@ -161,17 +165,24 @@ public class Site extends HttpServlet
 			item.addClass("list-group-item");
 			
 			
-			Element title = new Element("h4");
-			title.setData("Title: "+ p.getPostTitle());
+			Element title = new Element("h2");
+			title.setData(p.getPostTitle());
 			//title.addClasses("w-75", "p-3");
-			Element text = new Element("p");
+			Element text = new Element("h5");
 			text.setData(p.getPostText());
 			Element date = new Element("p");
-			date.setData("Date: " + p.getDatePosted());
+			date.setData("Date Posted: " + p.getDatePosted());
+			Element img = new Element("img");
+			if(p.getPicture() != null) {
+				img.setTag("img src='data:image/jpg;base64,"
+				+Base64.getEncoder().encodeToString(p.getPicture())+"' style=\"border:3px solid black;max-width:100%;\"");
+			}
 			item.addElement(title);
 			item.addElement(text);
-			item.addElement(date);
+			if(p.getPicture() != null)
+				item.addElement(img);
 			list.addElement(item);
+			item.addElement(date);
 		}
 		CompoundElement ad  = new CompoundElement("div");
 		ad.addClasses("col-2");

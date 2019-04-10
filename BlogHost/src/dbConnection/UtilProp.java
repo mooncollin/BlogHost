@@ -13,7 +13,7 @@ public class UtilProp
 	/**
 	 * The environmental variable 'BLOGHOST_CONFIG_FILE' value.
 	 */
-	private static String CONFIG_FILE = System.getenv("BLOGHOST_CONFIG_FILE");
+	private static String CONFIG_FILE = "/Users/pav/Desktop/config.properties";//System.getenv("BLOGHOST_CONFIG_FILE");
 	
 	/**
 	 * The properties object to pull properties from.

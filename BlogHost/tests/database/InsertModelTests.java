@@ -113,7 +113,7 @@ public class InsertModelTests
 	public void BlogHostCreatorsInsertAndDeleteTest()
 	{
 		BlogHostCreators creator = new BlogHostCreators(
-			"a username", "George", "Bush", 45, "yeehaw", null, false);
+			"a username", "George", "Bush", "GeorgeBush@gmail.com", 45, "yeehaw", null, false);
 		inserter(creator);
 		deleter(creator);
 	}
