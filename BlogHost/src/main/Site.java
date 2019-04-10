@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import dbConnection.DBConnection;
 import html.CompoundElement;
 import html.Element;
+import models.BlogHostPosts;
 import templates.MainTemplate;
 import util.Template;
 
@@ -35,18 +36,13 @@ public class Site extends HttpServlet
     protected String firstName;
     protected String lastName;
     protected String siteName;
-    protected List<Post> postList = new ArrayList<Post>();
+    protected int siteId;
+    protected List<BlogHostPosts> postList = new ArrayList<BlogHostPosts>();
     //protected Connection connection;
     
     
     protected void getSiteInfo(int id) {
-    	Connection connection = null;
-	    	try {
-				connection = DBConnection.getDBConnection();
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+    	Connection connection = DBConnection.getDBConnection();
         String selectSQL = "Select * from BlogHostSites as s join BlogHostCreators as c on s.id = c.id where s.id = ?";
         PreparedStatement preparedStatement = null;
         try {
@@ -55,6 +51,7 @@ public class Site extends HttpServlet
 	        preparedStatement.setInt(1, id);
 	        ResultSet rs = preparedStatement.executeQuery();
 	        if(rs.first()) {
+	        	siteId = rs.getInt("id");
 	        	siteName = rs.getString(4);
 	        	userName = rs.getString(7);
 	        	firstName = rs.getString(8);
@@ -73,20 +70,14 @@ public class Site extends HttpServlet
             }
             try {
                 if (connection != null)
-                	DBConnection.closeDBConnection();
+                	connection.close();
             } catch (Exception se) {
                 se.printStackTrace();
              }
          }
     }
     protected void getSitePosts(int id) {
-    	Connection connection = null;
-    	try {
-			connection = DBConnection.getDBConnection();
-		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+    	Connection connection = DBConnection.getDBConnection();
     	String selectSQL = "Select * from BlogHostPosts where site_id = ?";
         PreparedStatement preparedStatement = null;
         try {
@@ -96,12 +87,14 @@ public class Site extends HttpServlet
 	        ResultSet rs = preparedStatement.executeQuery();
 	       
 	        while(rs.next()) {
-	        	Post post = new Post();
-	        	post.setID(rs.getInt("SITE_ID"));
-	        	post.setPOST_TITLE(rs.getString("POST_TITLE"));
-	        	post.setPOST_TEXT(rs.getString("POST_TEXT"));
-	        	postList.add(post);
+	        	BlogHostPosts post = new BlogHostPosts(
+	        			rs.getInt("SITE_ID"),rs.getString("POST_TITLE"),
+	        			rs.getString("POST_TEXT"),rs.getBytes("picture"),
+	        			rs.getTimestamp("Date_Posted"),null);
+	        	
+	        	postList.add(0, post);
 	        }
+
          } catch (Exception e) {
             e.printStackTrace();
          } finally {
@@ -112,7 +105,7 @@ public class Site extends HttpServlet
             }
             try {
                 if (connection != null)
-                	DBConnection.closeDBConnection();
+                	connection.close();
              } catch (Exception se) {
                 se.printStackTrace();
              }
@@ -132,8 +125,15 @@ public class Site extends HttpServlet
 			return;
 		}
 		getSitePosts(Integer.parseInt(request.getParameter("site")));
-		MainTemplate.createTmp();
-		Template temp = MainTemplate.basicTemplate();
+		//MainTemplate.createTmp();
+		//Template temp = MainTemplate.basicTemplate();
+		MainTemplate tempMain = new MainTemplate();
+		Template temp = tempMain.getCurrentTemplate();
+		CompoundElement cont = new CompoundElement("div");
+		cont.addClass("container");
+		cont.addClass("col-10");
+		CompoundElement jumbo = new CompoundElement("div");
+		jumbo.addClass("jumbotron");
 		CompoundElement header = new CompoundElement("div");
 		Element pSite = new Element("p");
 		pSite.setData("Welcome to: "+ siteName);
@@ -147,29 +147,49 @@ public class Site extends HttpServlet
 		header.addElement(pSite);
 		header.addElement(pCreator);
 		header.addElement(pPosts);
+		if(request.getSession().getAttribute("userSiteID") != null &&  (int)request.getSession().getAttribute("userSiteID") == siteId) {
+			
+		}
+		CompoundElement area  = new CompoundElement("div");
+		area.addClass("row");
+		CompoundElement main  = new CompoundElement("div");
+		main.addClass("col-10");
 		CompoundElement list  = new CompoundElement("ul");
-		list.addClasses("list-group", "w-75", "p-3");
-		for (Post p : postList) {
+		list.addClasses("list-group", "p-3");
+		for (BlogHostPosts p : postList) {
 			CompoundElement item  = new CompoundElement("li");
 			item.addClass("list-group-item");
 			
 			
 			Element title = new Element("h4");
-			title.setData("Title: "+ p.POST_TITLE);
+			title.setData("Title: "+ p.getPostTitle());
 			//title.addClasses("w-75", "p-3");
 			Element text = new Element("p");
-			text.setData(p.POST_TEXT);
+			text.setData(p.getPostText());
+			Element date = new Element("p");
+			date.setData("Date: " + p.getDatePosted());
 			item.addElement(title);
 			item.addElement(text);
+			item.addElement(date);
 			list.addElement(item);
 		}
-		temp.getBody().addElement(header);
-		temp.getBody().addElement(list);
+		CompoundElement ad  = new CompoundElement("div");
+		ad.addClasses("col-2");
+		ad.setAttribute("display", "block");
+		
+		ad.setData("test");
+		main.addElement(list);
+		area.addElement(main);
+		area.addElement(ad);
+		jumbo.addElement(header);
+		jumbo.addElement(area);
+		//jumbo.addElement(ad);
+		cont.addElement(jumbo);
+		temp.getBody().addElement(cont);
 		
 		
 		response.setContentType("text/html");
 		response.getWriter().println(temp);
-		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
