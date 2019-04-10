@@ -1,5 +1,6 @@
 package main;
 import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +38,7 @@ public class Site extends HttpServlet
     protected String firstName;
     protected String lastName;
     protected String siteName;
+    protected String profilePic;
     protected int siteId;
     protected List<BlogHostPosts> postList = new ArrayList<BlogHostPosts>();
     //protected Connection connection;
@@ -58,6 +60,8 @@ public class Site extends HttpServlet
 	        	userName = rs.getString(7);
 	        	firstName = rs.getString(8);
 	        	lastName = rs.getString(9);
+	        	if(rs.getBlob(13)!=null)
+	        	profilePic = Base64.getEncoder().encodeToString(rs.getBlob(13).getBytes(1,(int)rs.getBlob(13).length()));
 	        }
 	        else {
 	        	siteName = "NoRow";
@@ -139,6 +143,12 @@ public class Site extends HttpServlet
 		CompoundElement jumbo = new CompoundElement("div");
 		jumbo.addClass("jumbotron");
 		CompoundElement header = new CompoundElement("div");
+		Element profilePicture = new Element("img");
+		if(profilePic != null) {
+			profilePicture.setAttribute("src", "data:image/jpg;base64,"
+			+ profilePic);
+			profilePicture.setAttribute("style", "border:3px solid black;");
+		}
 		Element pSite = new Element("p");
 		pSite.setData("Welcome to: "+ siteName);
 		
@@ -151,8 +161,11 @@ public class Site extends HttpServlet
 		header.addElement(pSite);
 		header.addElement(pCreator);
 		header.addElement(pPosts);
-		if(request.getSession().getAttribute("userSiteID") != null &&  (int)request.getSession().getAttribute("userSiteID") == siteId) {
-			
+		//if(request.getSession().getAttribute("userSiteID") != null &&  (int)request.getSession().getAttribute("userSiteID") == siteId) {
+		if(true) {
+			CompoundElement newPost = new CompoundElement("button", "Add New Post");
+			newPost.addClasses("btn", "btn-primary");
+			header.addElement(newPost);
 		}
 		CompoundElement area  = new CompoundElement("div");
 		area.addClass("row");
@@ -174,8 +187,9 @@ public class Site extends HttpServlet
 			date.setData("Date Posted: " + p.getDatePosted());
 			Element img = new Element("img");
 			if(p.getPicture() != null) {
-				img.setTag("img src='data:image/jpg;base64,"
-				+Base64.getEncoder().encodeToString(p.getPicture())+"' style=\"border:3px solid black;max-width:100%;\"");
+				img.setAttribute("src", "data:image/jpg;base64,"
+				+Base64.getEncoder().encodeToString(p.getPicture()));
+				img.setAttribute("style","border:3px solid black;max-width:100%;");
 			}
 			item.addElement(title);
 			item.addElement(text);

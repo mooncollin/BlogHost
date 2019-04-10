@@ -1,6 +1,9 @@
 package user;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Collection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -8,15 +11,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import forms.File;
 import forms.Form;
 import forms.Input;
 import forms.TextField;
 import html.CompoundElement;
+import models.BlogHostPosts;
 import templates.BootstrapTemplates;
 import templates.MainTemplate;
 import util.Template;
+import utils.StreamUtils;
 
 /**
  * This servlet handles delivering the form for a new post
@@ -24,7 +30,7 @@ import util.Template;
  * @author collin
  *
  */
-@WebServlet("/newpost")
+@WebServlet("/NewPost")
 @MultipartConfig
 public class NewPost extends HttpServlet
 {
@@ -37,7 +43,7 @@ public class NewPost extends HttpServlet
 	 * Makes a form for submitting a post.
 	 * @return a form
 	 */
-	private static Form makePostForm()
+	public static Form makePostForm()
 	{
 		Form form = new Form();
 		form.setMethod("POST");
@@ -70,6 +76,12 @@ public class NewPost extends HttpServlet
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		Object userSiteID = request.getSession().getAttribute("userSiteId");
+		if(userSiteID == null)
+		{
+			response.sendRedirect("/BlogHost/HomePage");
+			return;
+		}
 		Template template = new MainTemplate().getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
 		container.addClasses("container", "mt-5");
@@ -83,6 +95,13 @@ public class NewPost extends HttpServlet
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		Object userSiteID = request.getSession().getAttribute("userSiteId");
+		if(userSiteID == null)
+		{
+			response.sendRedirect("/BlogHost/HomePage");
+			return;
+		}
+		
 		Form form = NewPost.makePostForm();
 		if(form.validate(request.getParameterMap())
 				&& request.getParameter("postInput") != null
@@ -90,9 +109,31 @@ public class NewPost extends HttpServlet
 		{
 			String title = form.getInputByName("titleInput").getValue();
 			String post = request.getParameter("postInput");
-			System.out.printf("Title: %s Post: %s\n", title, post);
+			Timestamp time = Timestamp.from(Instant.now());
+			Collection<Part> parts = request.getParts();
+			byte[] picture = null;
+			for(Part p : parts)
+			{
+				if(p != null && 
+					p.getContentType() != null &&
+					p.getContentType().contains("image"))
+				{
+					picture = StreamUtils.getStreamBytes(p.getInputStream());
+					break;
+				}
+			}
+			BlogHostPosts newPost = new BlogHostPosts((Integer) userSiteID, title, post, picture, time, time);
+			if(newPost.commit())
+			{
+				response.sendRedirect("/BlogHost/Site?site="+(Integer) userSiteID);
+				return;
+			}
+			else
+			{
+				System.err.println("Error in committing Post");
+			}
 		}
 		
-		
+		doGet(request, response);
 	}
 }
