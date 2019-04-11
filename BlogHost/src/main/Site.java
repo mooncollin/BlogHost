@@ -116,7 +116,7 @@ public class Site extends HttpServlet
 		}
 		
 		if(siteName == "NoRow") {
-			response.sendRedirect("/Error/");
+			response.sendRedirect("/Error/"); 
 			return;
 		}
 		//MainTemplate.createTmp();
