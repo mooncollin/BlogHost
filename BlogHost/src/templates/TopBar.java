@@ -1,5 +1,9 @@
 package templates;
 
+import javax.servlet.http.HttpSession;
+
+import org.apache.catalina.connector.Request;
+
 import forms.Form;
 import html.CompoundElement;
 import html.Element;
@@ -7,10 +11,16 @@ import html.Element;
 public class TopBar 
 {
 	private static CompoundElement topBar;
+	private static String username;
 	
 	public TopBar()
 	{
 		topBar();
+	}
+	
+	public TopBar(String uname)
+	{
+		username = uname;
 	}
 	
 	public CompoundElement getTopBar()
@@ -57,7 +67,18 @@ public class TopBar
 		CompoundElement dropdown = createListItem("nav-item dropdown");
 		list.addElement(dropdown);
 		
-		CompoundElement dropdownLink = createLink("#", "User area", "nav-link dropdown-toggle"); //dropdown
+		CompoundElement dropdownLink;
+		
+		if (username == null)
+		{
+			dropdownLink = createLink("#", "User area", "nav-link dropdown-toggle"); //dropdown for non user
+		}
+		
+		else
+		{
+			dropdownLink = createLink("#", username, "nav-link dropdown-toggle"); //dropdown for authed user
+		}
+		
 		dropdownLink.setAttribute("id", "navbarDropdown");
 		dropdownLink.setAttribute("role", "button");
 		dropdownLink.setAttribute("data-toggle", "dropdown");
@@ -69,9 +90,17 @@ public class TopBar
 		menu.setAttribute("class", "dropdown-menu");
 		menu.setAttribute("aria-labelledby", "navbarDropdown");
 		dropdown.addElement(menu);
-
-		menu.addElement(logModal()); //login
-		menu.addElement(regModal()); //register
+		
+		if (username == null)
+		{
+			menu.addElement(logModal()); //login
+			menu.addElement(regModal()); //register
+		}
+		
+		else
+		{
+			menu.addElement(new CompoundElement("button"));
+		}
 	}
 	
 	private static CompoundElement modalButton(String id, String data)
@@ -101,20 +130,25 @@ public class TopBar
 		wrap.setAttribute("class", "row");
 		
 		//container to hold inputs
+		Form form = new Form();
+		wrap.addElement(form);
+		form.setAction("LogIn");
+		form.setMethod("POST");
+		
 		CompoundElement input = new CompoundElement("div");
 		wrap.addElement(input);
-		input.setAttribute("class", "container");
+		form.setAttribute("class", "container");
 		
 		//list of inputs
-		input.addElement(inputContainer("text", "Username"));
-		input.addElement(inputContainer("password", "Password"));
+		form.addElement(inputContainer("text", "Username"));
+		form.addElement(inputContainer("password", "Password"));
+		form.addElement(addSubmiButton("Login"));
 	
 		//container for buttons
-		CompoundElement buttons = new CompoundElement("div");
-		wrap.addElement(buttons);
-		buttons.setAttribute("class", "container");
-		buttons.addElement(addSubmiButton("Login"));
-		buttons.addElement(addSubmiButton("Signup"));
+		//CompoundElement buttons = new CompoundElement("div");
+		//wrap.addElement(buttons);
+		//buttons.setAttribute("class", "container");
+		//buttons.addElement(addSubmiButton("Login"));
 
 		return container;
 	}
@@ -232,6 +266,7 @@ public class TopBar
 		element.setAttribute("type", type);
 		element.setAttribute("class", "form-control");
 		element.setAttribute("placeholder", placeholder);
+		element.setAttribute("name", placeholder);
 		
 		return element;
 	}

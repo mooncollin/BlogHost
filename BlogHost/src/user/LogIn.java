@@ -1,5 +1,9 @@
 package user;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -7,7 +11,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import dbConnection.DBConnection;
 import forms.Form;
 import forms.Password;
 import forms.Submit;
@@ -28,55 +34,29 @@ public class LogIn extends HttpServlet
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		MainTemplate temp = new MainTemplate();
-		Form form = new Form();
-		form.setAttribute("method", "POST");
-		Element br = new Element("br");
+		String username = request.getParameter("Username");
+		String password = request.getParameter("Password");
+		String user = authentication(username, password);
 		
-		CompoundElement body = new CompoundElement("div");
-		Form log = new Form();
-		log.setAttribute("id", "inputUsername");
-		CompoundElement uname = createLabel("uname", "Username");
-		uname.setAttribute("style", "float:left;");
-		TextField username = createInput("Enter Username", "uname");
-		log.addElement(uname);
-		log.addElement(username);
+		HttpSession session = request.getSession(true);
 		
-		Form inputPassword = new Form();
-        inputPassword.setAttribute("id", "inputPassword");
-        CompoundElement psw = createLabel("psw", "Password");
-        Password password = new Password();
-        password.setPlaceholder("Enter password");
-        password.setName("pswrd");
-        password.setRequired(true);
-        
-        inputPassword.addElement(psw);
-        inputPassword.addElement(password);
-        
-    	Form buttons = new Form();
-		buttons.setAttribute("class", "buttons");
-		Submit login = new Submit();
-		login.setAttribute("style", "float:left");
-		login.setAttribute("onclick", "Authorize");
-		Submit register = new Submit();
-		register.setAttribute("style", "float:right");
-		register.setAttribute("onclick", "Register");
-		buttons.addElement(login);
-		buttons.addElement(register);
+		MainTemplate temp;
 		
-		body.addElement(log);
-		body.addElement(br);
-		body.addElement(inputPassword);
-		body.addElement(br);
-		body.addElement(buttons);
-		form.addElement(body);
-
+		if (user != null)
+		{
+			temp = new MainTemplate(user);
+			String userID = new String("userID");
+		    String userName = new String(user);
+		    session.setAttribute(user, userName);
+		}
 		
-		CompoundElement container = temp.createContainer();
-		container.addElement(form);
-		temp.getCurrentTemplate().getBody().addElement(container);
-
-
+		else
+		{
+			temp = new MainTemplate();
+		}
+		
+		
+		
 		response.setContentType("text/html");
 		response.getWriter().println(temp.getCurrentTemplate());
 	}
@@ -86,22 +66,76 @@ public class LogIn extends HttpServlet
 		doGet(request, response);
 	}
 	
-	private static CompoundElement createLabel(String attr, String data)
+	
+	private static String authentication(String user, String pass)
 	{
-		CompoundElement label = new CompoundElement("label");
-		label.setAttribute("for", attr);
-		label.setData("<b>" + data + "</b>");
-		return label;
+		Connection connection = null;
+		PreparedStatement ps = null;
+		
+		try
+		{
+			connection = DBConnection.getDBConnection();
+			
+			String query = "SELECT * FROM BlogHostCreators WHERE USER_NAME=? AND PASSWORD=?";
+			ps = connection.prepareStatement(query);
+			ps.setString(1, user);
+			ps.setString(2, pass);
+
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.next())
+			{
+				String un =  new String(rs.getString("USER_NAME").trim());
+				rs.close();
+				ps.close();
+				connection.close();	
+				return un;
+			}
+			
+			else
+			{	
+				rs.close();
+				ps.close();
+				connection.close();	
+				return new String();
+			}
+		}
+		
+		catch (SQLException se) 
+		{
+			se.printStackTrace();
+		} 
+		
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		} 
+		
+		finally 
+		{
+			try 
+			{
+				if (ps != null)
+					ps.close();
+			} 
+			
+			catch (SQLException se2) 
+			{}
+			
+			try 
+			{
+				if (connection != null)
+					connection.close();
+			} 
+			
+			catch (SQLException se) 
+			{
+				se.printStackTrace();
+			}
+		}
+		
+		return "";
 	}
 	
-	private static TextField createInput(String placeholder, String name)
-	{
-		TextField input = new TextField();
-		input.setPlaceholder(placeholder);
-		input.setName(name);
-		input.setRequired(true);
-		
-		return input;
-	}
-
+	
 }
