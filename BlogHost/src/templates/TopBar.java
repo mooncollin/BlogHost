@@ -21,6 +21,7 @@ public class TopBar
 	public TopBar(String uname)
 	{
 		username = uname;
+		topBar();
 	}
 	
 	public CompoundElement getTopBar()
@@ -99,7 +100,8 @@ public class TopBar
 		
 		else
 		{
-			menu.addElement(new CompoundElement("button"));
+		
+			menu.addElement(logoutForm());
 		}
 	}
 	
@@ -118,6 +120,29 @@ public class TopBar
 	private static CompoundElement logModal()
 	{
 		return createModal("loginModal", "Login", loginForm());	
+	}
+	
+	private static CompoundElement logoutForm()
+	{
+		
+
+		Form form = new Form();
+		
+		
+		//container to hold inputs
+		
+		form.setAction("LogOut");
+		form.setMethod("POST");
+		//list of inputs
+		form.addElement(addSubmiButton("LogOut"));
+	
+		//container for buttons
+		//CompoundElement buttons = new CompoundElement("div");
+		//wrap.addElement(buttons);
+		//buttons.setAttribute("class", "container");
+		//buttons.addElement(addSubmiButton("Login"));
+		
+		return form;
 	}
 	
 	private static CompoundElement loginForm()
@@ -140,9 +165,9 @@ public class TopBar
 		form.setAttribute("class", "container");
 		
 		//list of inputs
-		form.addElement(inputContainer("text", "Username"));
-		form.addElement(inputContainer("password", "Password"));
-		form.addElement(addSubmiButton("Login"));
+		form.addElement(inputContainer("text","Username"));
+		form.addElement(inputContainer("password","Password"));
+		form.addElement(addSubmiButton("LogIn"));
 	
 		//container for buttons
 		//CompoundElement buttons = new CompoundElement("div");

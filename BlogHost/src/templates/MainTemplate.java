@@ -21,7 +21,7 @@ public class MainTemplate
 	public MainTemplate(String user)
 	{
 		createTmp();
-		topBar = new TopBar();
+		topBar = new TopBar(user);
 		botBar = new BotBar();
 		basicTemplate();
 	}
