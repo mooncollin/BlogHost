@@ -99,9 +99,6 @@ public class Site extends HttpServlet
     }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-//		if(request.getSession().getAttribute("userSiteId") == null)
-//			request.getSession().setAttribute("userSiteId",1);
-		postList.clear();
 		getSiteInfo(Integer.parseInt(request.getParameter("site")));
 		getSitePosts(Integer.parseInt(request.getParameter("site")));
 		boolean siteSet = false;
