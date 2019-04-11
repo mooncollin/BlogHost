@@ -99,9 +99,11 @@ public class Site extends HttpServlet
     }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		if(request.getSession().getAttribute("userSiteId") == null)
-			request.getSession().setAttribute("userSiteId",1);
+//		if(request.getSession().getAttribute("userSiteId") == null)
+//			request.getSession().setAttribute("userSiteId",1);
 		postList.clear();
+		getSiteInfo(Integer.parseInt(request.getParameter("site")));
+		getSitePosts(Integer.parseInt(request.getParameter("site")));
 		boolean siteSet = false;
 		//request.getSession().setAttribute("userSiteID",1);
 		if(request.getSession().getAttribute("userSiteId") != null &&  (int)request.getSession().getAttribute("userSiteId") == siteId) {
@@ -112,16 +114,20 @@ public class Site extends HttpServlet
 			response.sendRedirect("/Error/");
 			return;
 		}
-		getSiteInfo(Integer.parseInt(request.getParameter("site")));
+		
 		if(siteName == "NoRow") {
 			response.sendRedirect("/Error/");
 			return;
 		}
-		postList.clear();
-		getSitePosts(Integer.parseInt(request.getParameter("site")));
 		//MainTemplate.createTmp();
 		//Template temp = MainTemplate.basicTemplate();
-		MainTemplate tempMain = new MainTemplate();
+		MainTemplate tempMain;
+		if (siteSet) {
+			tempMain = new MainTemplate((String) request.getSession().getAttribute("userName"));
+		}
+		else {
+			tempMain = new MainTemplate();
+		}
 		Template temp = tempMain.getCurrentTemplate();
 		CompoundElement cont = new CompoundElement("div");
 		cont.addClass("container");
