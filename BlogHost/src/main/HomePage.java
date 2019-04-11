@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mysql.cj.util.StringUtils;
+
 import templates.MainTemplate;
 import html.*;
 import util.*;
@@ -22,7 +24,13 @@ public class HomePage extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		MainTemplate temp = new MainTemplate();
+		MainTemplate temp;
+		if(request.getSession().getAttribute("userSiteId") != null){
+			temp = new MainTemplate((String) request.getSession().getAttribute("userName"));
+		}
+		else {
+			temp = new MainTemplate();
+		}
 		response.setContentType("text/html");
 		CompoundElement container = temp.createContainer();
 		container.setData("<center><h1>Welcome to BlogHost</h1></center>");

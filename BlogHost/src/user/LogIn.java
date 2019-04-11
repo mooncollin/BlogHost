@@ -48,19 +48,20 @@ public class LogIn extends HttpServlet
 			String userID = new String("userID");
 		    String userName = new String(user);
 		    session.setAttribute("user", userName);
-		    response.setHeader("Refresh", "0; URL=" + request.getContextPath() + "/Site?site="+session.getAttribute("userSiteId"));
+		    
+		    //response.setHeader("Refresh", "0; URL=" + request.getContextPath() + "/Site?site="+session.getAttribute("userSiteId"));
 		}
 		
 		else
 		{
 			temp = new MainTemplate();
-			response.setHeader("Refresh", "0; URL=" + request.getContextPath() + "/HomePage");
+			//response.setHeader("Refresh", "0; URL=" + request.getContextPath() + "/HomePage");
 		}
+		response.sendRedirect((String) request.getHeaders("Referer").nextElement());
 		
 		
-		
-		response.setContentType("text/html");
-		response.getWriter().println(temp.getCurrentTemplate());
+		//response.setContentType("text/html");
+		//response.getWriter().println(temp.getCurrentTemplate());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 

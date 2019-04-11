@@ -15,6 +15,7 @@ public class TopBar
 	
 	public TopBar()
 	{
+		username = null;
 		topBar();
 	}
 	

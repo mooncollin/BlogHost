@@ -29,7 +29,13 @@ public class About extends HttpServlet
 				+ "blogging now, they may want to make money from it in the future. Users will need to choose a flexible "
 				+ "platform with the possibility of further growth.";
 		
-		MainTemplate temp = new MainTemplate();
+		MainTemplate temp;
+		if(request.getSession().getAttribute("userSiteId") != null){
+			temp = new MainTemplate((String) request.getSession().getAttribute("userName"));
+		}
+		else {
+			temp = new MainTemplate();
+		}
 		CompoundElement container = new CompoundElement("div");
 		container.setAttribute("class", "container");
 		CompoundElement jumbotron = new CompoundElement("div");

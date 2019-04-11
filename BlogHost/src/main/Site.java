@@ -101,11 +101,16 @@ public class Site extends HttpServlet
 	{
 		getSiteInfo(Integer.parseInt(request.getParameter("site")));
 		getSitePosts(Integer.parseInt(request.getParameter("site")));
-		boolean siteSet = false;
+		boolean siteOwner = false;
+		boolean loggedIn = false;
 		//request.getSession().setAttribute("userSiteID",1);
 		if(request.getSession().getAttribute("userSiteId") != null &&  (int)request.getSession().getAttribute("userSiteId") == siteId) {
-			siteSet = true;
+			siteOwner = loggedIn = true;
 		}
+		else if(request.getSession().getAttribute("userSiteId") != null){
+			loggedIn = true;
+		}
+		
 		String page = request.getParameter("site");
 		if(page == null || page == "" || !StringUtils.isStrictlyNumeric(page)) {
 			response.sendRedirect("/Error/");
@@ -119,7 +124,7 @@ public class Site extends HttpServlet
 		//MainTemplate.createTmp();
 		//Template temp = MainTemplate.basicTemplate();
 		MainTemplate tempMain;
-		if (siteSet) {
+		if (loggedIn) {
 			tempMain = new MainTemplate((String) request.getSession().getAttribute("userName"));
 		}
 		else {
@@ -128,7 +133,7 @@ public class Site extends HttpServlet
 		Template temp = tempMain.getCurrentTemplate();
 		CompoundElement cont = new CompoundElement("div");
 		cont.addClass("container");
-		cont.addClass("col-10");
+		cont.addClass("col-11");
 		CompoundElement jumbo = new CompoundElement("div");
 		jumbo.addClass("jumbotron");
 		CompoundElement header = new CompoundElement("div");
@@ -150,7 +155,7 @@ public class Site extends HttpServlet
 		header.addElement(pSite);
 		header.addElement(pCreator);
 		header.addElement(pPosts);
-		if(siteSet) {
+		if(siteOwner) {
 		CompoundElement newPost = new CompoundElement("a", "Add New Post");
 			newPost.addClasses("btn", "btn-primary", "button");
 			newPost.setAttribute("href", "/BlogHost/NewPost");
@@ -183,7 +188,7 @@ public class Site extends HttpServlet
 				img.setAttribute("style","border:3px solid black;max-width:100%;");
 			}
 			Form form = new Form();
-			if(siteSet) {
+			if(siteOwner) {
 				form.setMethod("POST");
 				CompoundElement submitButton = new CompoundElement("button", "Delete Post");
 				submitButton.addClasses("btn", "btn-danger");
