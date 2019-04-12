@@ -70,7 +70,7 @@ public class Registration extends HttpServlet
 
 			//query for BlogHostCreators
 			String query = "INSERT INTO BlogHostCreators (ID, USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, AGE, PASSWORD, PROFILE_PICTURE, ADMIN) "
-					+ "VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT)";
+					+ "VALUES(DEFAULT, ?, ?, ?, ?, ?, md5(?), DEFAULT, DEFAULT)";
 			ps = connection.prepareStatement(query);
 			
 			String uname = request.getParameter("Uname");
