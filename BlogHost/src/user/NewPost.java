@@ -18,6 +18,8 @@ import forms.Form;
 import forms.Input;
 import forms.TextField;
 import html.CompoundElement;
+import main.HomePage;
+import main.Site;
 import models.BlogHostPosts;
 import templates.BootstrapTemplates;
 import templates.MainTemplate;
@@ -38,6 +40,8 @@ public class NewPost extends HttpServlet
 	 * Default serial version.
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public static final String URL = "/BlogHost/NewPost";
 	
 	/**
 	 * Makes a form for submitting a post.
@@ -61,7 +65,6 @@ public class NewPost extends HttpServlet
 		pictureInput.setName(pictureInput.getAttribute("id"));
 		textGroup.getElementById("postInput").setAttribute("required", "");
 		textGroup.getElementById("postInput").setAttribute("name", "postInput");
-		textGroup.getElementById("postInput").setAttribute("rows", "10");
 		
 		pictureInput.removeAttribute("class");
 		pictureInput.addClass("form-control-file");
@@ -75,15 +78,18 @@ public class NewPost extends HttpServlet
 		return form;
 	}
 	
+	/**
+	 * Creates a new post form and delivers that to the user.
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		Object userSiteID = request.getSession().getAttribute("userSiteId");
+		Integer userSiteID = UserUtils.getUserSiteID(request);
 		if(userSiteID == null)
 		{
-			response.sendRedirect("/BlogHost/HomePage");
+			response.sendRedirect(HomePage.URL);
 			return;
 		}
-		Template template = new MainTemplate().getCurrentTemplate();
+		Template template = new MainTemplate(UserUtils.getUserName(request)).getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
 		container.addClasses("container", "mt-5");
 		container.addElement(NewPost.makePostForm());
@@ -94,12 +100,15 @@ public class NewPost extends HttpServlet
 		response.getWriter().print(template);
 	}
 	
+	/**
+	 * Processes a new post.
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		Object userSiteID = request.getSession().getAttribute("userSiteId");
+		Integer userSiteID = UserUtils.getUserSiteID(request);
 		if(userSiteID == null)
 		{
-			response.sendRedirect("/BlogHost/HomePage");
+			response.sendRedirect(HomePage.URL);
 			return;
 		}
 		
@@ -123,10 +132,10 @@ public class NewPost extends HttpServlet
 					break;
 				}
 			}
-			BlogHostPosts newPost = new BlogHostPosts((Integer) userSiteID, title, post, picture, time, time);
+			BlogHostPosts newPost = new BlogHostPosts(userSiteID, title, post, picture, time, time);
 			if(newPost.commit())
 			{
-				response.sendRedirect("/BlogHost/Site?site="+(Integer) userSiteID);
+				response.sendRedirect(Site.URL + "?site=" + userSiteID);
 				return;
 			}
 			else

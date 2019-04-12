@@ -6,15 +6,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mysql.cj.util.StringUtils;
-
 import templates.MainTemplate;
 import html.*;
-import util.*;
 
 @WebServlet("/HomePage")
 public class HomePage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	public static final String URL = "/BlogHost/HomePage";
 
     
     public HomePage() 
