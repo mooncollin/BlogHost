@@ -132,14 +132,14 @@ public final class BlogHostLikes extends Model
 		if(results.next())
 		{
 			results.updateInt("reader_id", getReaderID());
-			results.updateObject("post_id", getPostID(), Types.BIGINT);
+			results.updateObject("post_id", getPostID());
 			results.updateRow();
 		}
 		else
 		{
 			results.moveToInsertRow();
 			results.updateInt("reader_id", getReaderID());
-			results.updateObject("post_id", getPostID(), Types.BIGINT);
+			results.updateObject("post_id", getPostID());
 			results.insertRow();
 		}
 		
