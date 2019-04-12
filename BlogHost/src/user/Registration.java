@@ -2,13 +2,19 @@ package user;
 
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import dbConnection.DBConnection;
 import templates.MainTemplate;
 import forms.*;
 import html.*;
@@ -28,57 +34,23 @@ public class Registration extends HttpServlet
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 		MainTemplate temp = new MainTemplate();
-		Form form = new Form();
-		form.setAttribute("method", "POST");
+		CompoundElement container = new CompoundElement("div");
+		container.setAttribute("class", "container");
+		CompoundElement jumbotron = new CompoundElement("div");
+		container.setAttribute("class", "jumbotron");
+		container.addElement(jumbotron);
 		
-		Element br = new Element("br");
-		CompoundElement username = createLabel("username", "Username:");
-		CompoundElement first_name = createLabel("first_name", "First Name:");
-		CompoundElement last_name = createLabel("last_name", "Last Name:");
-		CompoundElement email = createLabel("email", "EMail:");
-		CompoundElement password = createLabel("password", "Password:");
-		CompoundElement re_password = createLabel("re_password", "Repeat password:");
+		if(register(request))
+		{	
+			jumbotron.setData("Success");
+			response.sendRedirect(response.encodeRedirectURL("HomePage"));
+		}
 		
-		TextField usName = createInput("Username", "usName");
-		TextField fiName = createInput("First Name", "fiName");
-		TextField laName = createInput("Last Name", "laName");
-		TextField eml = createInput("EMail", "eml");
-		TextField pass1 = createInput("Password", "pass1");
-		TextField pass2 = createInput("Repeat Password", "pass2");
-		
-		
-		form.addElement(username);
-		form.addElement(usName);
-		form.addElement(br);
-		
-		form.addElement(first_name);
-		form.addElement(fiName);
-		form.addElement(br);
-		
-		form.addElement(last_name);
-		form.addElement(laName);
-		form.addElement(br);
-		
-		form.addElement(email);
-		form.addElement(eml);
-		form.addElement(br);
-		
-		form.addElement(password);
-		form.addElement(pass1);
-		form.addElement(br);
-
-		form.addElement(re_password);
-		form.addElement(pass2);
-		form.addElement(br);
-		
-		Submit button = new Submit();
-		button.setAttribute("style", "float:left");
-		form.addElement(button);
-		
-		temp.getCurrentTemplate().getBody().addElement(form);
-		
-		response.setContentType("text/html");
-		response.getWriter().println(temp.getCurrentTemplate());
+		else
+		{
+			jumbotron.setData("Try again");
+			response.getWriter().println(temp.getCurrentTemplate());
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
@@ -86,22 +58,82 @@ public class Registration extends HttpServlet
 		doGet(request, response);
 	}
 	
-	private static CompoundElement createLabel(String attr, String data)
+	private static boolean register(HttpServletRequest request)
 	{
-		CompoundElement label = new CompoundElement("label");
-		label.setAttribute("for", attr);
-		label.setData("<b>" + data + "</b>");
-		return label;
-	}
-	
-	private static TextField createInput(String placeholder, String name)
-	{
-		TextField input = new TextField();
-		input.setPlaceholder(placeholder);
-		input.setName(name);
-		input.setRequired(true);
+		Boolean bool = true;
+		Connection connection = null;
+		PreparedStatement ps = null;
 		
-		return input;
+		try
+		{
+			connection = DBConnection.getDBConnection();
+
+			//query for BlogHostCreators
+			String query = "INSERT INTO BlogHostCreators (ID, USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, AGE, PASSWORD, PROFILE_PICTURE, ADMIN) "
+					+ "VALUES(DEFAULT, ?, ?, ?, ?, ?, md5(?), DEFAULT, DEFAULT)";
+			ps = connection.prepareStatement(query);
+			
+			String uname = request.getParameter("Uname");
+			String fname = request.getParameter("Fname");
+			String lname = request.getParameter("Lname");
+			String email = request.getParameter("Email");
+			String age = request.getParameter("Age");
+			String password = request.getParameter("Password");
+			
+			System.out.printf("\n%s %s %s %s %s %s", uname, fname, lname, age, email, password);
+
+			ps.setString(1, uname);
+			ps.setString(2, fname);
+			ps.setString(3, lname);
+			ps.setString(4, email);
+			ps.setString(5, age);
+			ps.setString(6, password);
+			
+			int rs = ps.executeUpdate(); // checks if insertion was successful
+			System.out.println(rs);
+			
+			if (rs <= 0)
+			{
+				bool = false;
+			}
+			
+			ps.close();
+			connection.close();
+		}
+		
+		catch (SQLException se) 
+		{
+			se.printStackTrace();
+		} 
+		
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		} 
+		
+		finally 
+		{
+			try 
+			{
+				if (ps != null)
+					ps.close();
+			} 
+			
+			catch (SQLException se2) 
+			{}
+			
+			try 
+			{
+				if (connection != null)
+					connection.close();
+			} 
+			
+			catch (SQLException se) 
+			{
+				se.printStackTrace();
+			}
+		}
+		return bool;
 	}
 	
 }
