@@ -39,6 +39,8 @@ public class Site extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	
+	public static final String URL = "/BlogHost/Site";
+	
     public Site() 
     {
         super();

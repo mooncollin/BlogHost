@@ -1,5 +1,6 @@
 package templates;
 
+import forms.Checkbox;
 import forms.Input;
 import html.CompoundElement;
 
@@ -35,6 +36,36 @@ public class BootstrapTemplates
 		}
 		
 		outerDiv.addElement(input);
+		
+		if(helpText != null)
+		{
+			CompoundElement help = new CompoundElement("small", helpText);
+			help.addClasses("form-text", "text-muted");
+			outerDiv.addElement(help);
+		}
+		
+		return outerDiv;
+	}
+	
+	public static CompoundElement formGroupCheckbox(String labelText, String helpText, String id)
+	{
+		CompoundElement outerDiv = new CompoundElement("div");
+		outerDiv.addClasses("form-group", "form-check");
+		
+		Checkbox box = new Checkbox();
+		box.addClass("form-check-input");
+		if(id != null)
+		{
+			box.setAttribute("id", id);
+		}
+		
+		outerDiv.addElement(box);
+		if(labelText != null)
+		{
+			box.setLabelText(labelText);
+			box.getLabel().addClass("form-check-label");
+			outerDiv.addElement(box.getLabel());
+		}
 		
 		if(helpText != null)
 		{
