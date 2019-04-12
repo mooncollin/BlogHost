@@ -35,6 +35,7 @@ public class MainTemplate
 		tmp.getBody().addScript("js/jquery-3.3.1.min.js");
 		tmp.getBody().addScript("js/popper.min.js");
 		tmp.getBody().addScript("js/bootstrap.min.js");
+		tmp.getBody().addScript("js/like.js");
 		
 		return tmp;
 	}

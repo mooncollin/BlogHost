@@ -91,8 +91,10 @@ public class LogIn extends HttpServlet
 			{
 				String un =  new String(rs.getString("USER_NAME").trim());
 				int siteId =  rs.getInt(10);
+				int userId =  rs.getInt("id");
 				request.getSession().setAttribute("userName", un);
 				request.getSession().setAttribute("userSiteId", siteId);
+				request.getSession().setAttribute("userId", userId);
 				rs.close();
 				ps.close();
 				connection.close();	
