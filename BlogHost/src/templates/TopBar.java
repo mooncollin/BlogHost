@@ -161,8 +161,8 @@ public class TopBar
 		form.setAction("LogIn");
 		form.setMethod("POST");
 		
-		CompoundElement input = new CompoundElement("div");
-		wrap.addElement(input);
+		//CompoundElement input = new CompoundElement("div");
+		//wrap.addElement(input);
 		form.setAttribute("class", "container");
 		
 		//list of inputs
@@ -219,23 +219,33 @@ public class TopBar
 		wrap.setAttribute("class", "row");
 		
 		//container to hold inputs
+		/*
 		CompoundElement input = new CompoundElement("div");
 		wrap.addElement(input);
-		input.setAttribute("class", "container");
+		input.setAttribute("class", "container");*/
+		
+		Form form = new Form();
+		wrap.addElement(form);
+		form.setAction("Registration");
+		form.setMethod("POST");
+		form.setAttribute("class", "container");
 		
 		//list of inputs
-		input.addElement(inputContainer("text", "Enter Username"));
-		input.addElement(inputContainer("text", "Enter First Name"));
-		input.addElement(inputContainer("text", "Enter Last Name"));
-		input.addElement(inputContainer("text", "Enter Email"));
-		input.addElement(inputContainer("password", "Enter password"));
-		input.addElement(inputContainer("password", "Repeat Password"));
-	
+		form.addElement(inputContainer("text", "Enter Username", "Uname"));
+		form.addElement(inputContainer("text", "Enter First Name", "Fname"));
+		form.addElement(inputContainer("text", "Enter Last Name", "Lname"));
+		form.addElement(inputContainer("text", "Enter Age", "Age"));
+		form.addElement(inputContainer("text", "Enter Email", "Email"));
+		form.addElement(inputContainer("password", "Enter password", "Password"));
+		form.addElement(inputContainer("password", "Repeat Password"));
+		form.addElement(addSubmiButton("Signup"));
+		
+		/*
 		//container for buttons
 		CompoundElement buttons = new CompoundElement("div");
 		wrap.addElement(buttons);
 		buttons.setAttribute("class", "container");
-		buttons.addElement(addSubmiButton("Signup"));
+		buttons.addElement(addSubmiButton("Signup"));*/
 
 		return container;
 	}
@@ -245,6 +255,15 @@ public class TopBar
 		CompoundElement inputContainer = new CompoundElement("div");
 		inputContainer.setAttribute("class", "input-group mb-3");
 		inputContainer.addElement(createInput(inputType, placeholder));
+		
+		return inputContainer;
+	}
+	
+	private static CompoundElement inputContainer(String inputType, String placeholder, String name)
+	{
+		CompoundElement inputContainer = new CompoundElement("div");
+		inputContainer.setAttribute("class", "input-group mb-3");
+		inputContainer.addElement(createInput(inputType, placeholder, name));
 		
 		return inputContainer;
 	}
@@ -293,6 +312,18 @@ public class TopBar
 		element.setAttribute("class", "form-control");
 		element.setAttribute("placeholder", placeholder);
 		element.setAttribute("name", placeholder);
+		
+		return element;
+	}
+	
+	
+	private static Element createInput(String type, String placeholder, String name)
+	{
+		Element element = new Element("input");
+		element.setAttribute("type", type);
+		element.setAttribute("class", "form-control");
+		element.setAttribute("placeholder", placeholder);
+		element.setAttribute("name", name);
 		
 		return element;
 	}
