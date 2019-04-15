@@ -168,7 +168,23 @@ public class Store extends HttpServlet
 			counter++;
 		}
 		
-		container.addElement(cardContainer);
+		if(items.isEmpty())
+		{
+			CompoundElement jumbotron = new CompoundElement("div");
+			jumbotron.addClass("jumbotron");
+			CompoundElement h1 = new CompoundElement("h1", "This Store is Empty!");
+			CompoundElement lead = new CompoundElement("p", "It looks like this creator has no items for sale. Check back some other time.");
+			lead.addClass("lead");
+			
+			jumbotron.addElement(h1);
+			jumbotron.addElement(lead);
+			
+			container.addElement(jumbotron);
+		}
+		else
+		{
+			container.addElement(cardContainer);
+		}
 		template.getBody().addElement(container);
 		response.setContentType("text/html");
 		response.getWriter().print(template);
