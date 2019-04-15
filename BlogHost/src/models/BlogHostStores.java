@@ -60,13 +60,14 @@ final public class BlogHostStores extends Model
 	 * @param picture
 	 */
 	public BlogHostStores(Integer creator_id, String item_name,
-			String item_description, byte[] picture)
+			String item_description, byte[] picture, BigDecimal amount)
 	{
 		setID(-1);
 		setCreatorID(creator_id);
 		setItemName(item_name);
 		setItemDescription(item_description);
 		setPicture(picture);
+		setAmount(amount);
 	}
 	
 	/**
