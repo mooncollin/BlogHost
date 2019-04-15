@@ -147,7 +147,7 @@ public class ChangeModelTests
 	public void BlogHostStoresChangeTest()
 	{
 		BlogHostStores store = new BlogHostStores(
-				1, "shirt", "ew", null);
+				1, "shirt", "ew", null, new BigDecimal(45));
 		InsertModelTests.inserter(store);
 		assertFalse(store.changed());
 		store.setItemDescription("weeeee");

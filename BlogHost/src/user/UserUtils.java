@@ -6,6 +6,7 @@ public class UserUtils
 {
 	public static final String USER_SITE_ID_KEY = "userSiteId";
 	public static final String USER_NAME_KEY = "userName";
+	public static final String USER_ID_KEY = "userId";
 	
 	public static Integer getUserSiteID(HttpServletRequest request)
 	{
@@ -27,5 +28,16 @@ public class UserUtils
 		}
 		
 		return (String) userName;
+	}
+	
+	public static Integer getUserID(HttpServletRequest request)
+	{
+		Object userID = request.getSession().getAttribute(USER_ID_KEY);
+		if(userID == null)
+		{
+			return null;
+		}
+		
+		return (Integer) userID;
 	}
 }
