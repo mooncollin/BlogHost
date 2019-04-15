@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import forms.Input;
 import html.CompoundElement;
 import html.Element;
 import models.BlogHostPosts;
+import templates.BootstrapTemplates;
 import templates.MainTemplate;
 import user.NewPost;
 import util.Template;
@@ -63,19 +65,19 @@ public class Site extends HttpServlet
 	    	int readerId = (request.getSession().getAttribute("userId") == null) 
 	    			? -1:(Integer) request.getSession().getAttribute("userId");
 	    	Connection connection = DBConnection.getDBConnection();
-	        String selectSQL = "Select USER_NAME, FIRST_NAME, LAST_NAME, SITE_NAME, "
-	        			+ "PROFILE_PICTURE, SITE_ID, SITE_NAME,p.id as POST_ID, POST_TITLE, "
-	        			+ "POST_TEXT, PICTURE, DATE_POSTED, Count(READER_ID) as LIKE_COUNT, " 
-	        			+ "(SELECT 1=1 FROM bloghost.BlogHostLikes "
-	        				+ "WHERE READER_ID = ? AND POST_ID = p.id) as LIKED_BY_USER " 
-	        		+ "From bloghost.BlogHostPosts as p " 
-	        		+ "left join bloghost.BlogHostLikes as l on l.POST_ID = p.id " 
-	        		+ "join bloghost.BlogHostSites as s on p.SITE_ID = s.id " 
-	        		+ "join bloghost.BlogHostCreators as c  on c.id = s.CREATOR_ID " 
-	        		+ "WHERE SITE_ID = ? "
-	        		+ "Group BY CREATOR_ID, SITE_ID, SITE_NAME,p.id, "
-	        			+ "POST_TITLE, POST_TEXT, PICTURE, DATE_POSTED " 
-	        		+ "ORDER BY POST_ID DESC;";
+	        String selectSQL = "Select USER_NAME, FIRST_NAME, LAST_NAME, SITE_NAME, " + 
+	        		"PROFILE_PICTURE, SITE_ID, SITE_NAME,p.id as POST_ID, POST_TITLE, " + 
+	        		"POST_TEXT, PICTURE, DATE_POSTED, Count(READER_ID) as LIKE_COUNT, " + 
+	        		"(SELECT 1=1 FROM bloghost.BlogHostLikes " + 
+	        		"WHERE READER_ID = ? AND POST_ID = p.id) as LIKED_BY_USER " + 
+	        		"From bloghost.BlogHostSites as s " + 
+	        		"left join bloghost.BlogHostPosts as p on p.SITE_ID = s.id   " + 
+	        		"left join bloghost.BlogHostLikes as l on l.POST_ID = p.id  " + 
+	        		"left join bloghost.BlogHostCreators as c  on c.id = s.CREATOR_ID " + 
+	        		"WHERE s.id  = ? " + 
+	        		"Group BY CREATOR_ID, SITE_ID, SITE_NAME,p.id, POST_TITLE, POST_TEXT, PICTURE, DATE_POSTED " + 
+	        		"ORDER BY POST_ID DESC;";
+
 	        PreparedStatement preparedStatement = null;
 	        try {
 	        	connection = DBConnection.getDBConnection();
@@ -88,27 +90,42 @@ public class Site extends HttpServlet
 		        
 		        while(rs.next()) {
 		        	if(!rowFound) {
-		        		userName = rs.getString("USER_NAME");
-			        	firstName = rs.getString("FIRST_NAME");
-			        	lastName = rs.getString("LAST_NAME");
-			        	siteName = rs.getString("SITE_NAME");
+		        		if(rs.getString("USER_NAME")!=null)
+		        			userName = rs.getString("USER_NAME");
+		        		if(rs.getString("FIRST_NAME")!=null)
+		        			firstName = rs.getString("FIRST_NAME");
+		        		if(rs.getString("LAST_NAME")!=null)
+		        			lastName = rs.getString("LAST_NAME");
+		        		if(rs.getString("SITE_NAME")!=null)
+		        			siteName = rs.getString("SITE_NAME");
 			        	if(rs.getBlob("PROFILE_PICTURE")!=null)
 				        	profilePic = Base64.getEncoder().encodeToString(rs.getBlob("PROFILE_PICTURE").getBytes(1,(int)rs.getBlob("PROFILE_PICTURE").length()));
-			        	siteName = rs.getString("SITE_NAME");
-			        	siteId = rs.getInt("SITE_ID");
+			        	if(rs.getString("SITE_NAME")!=null)
+			        		siteName = rs.getString("SITE_NAME");
+			        	if(rs.getString("SITE_ID")!=null)
+			        		siteId = rs.getInt("SITE_ID");
 		        	}
-		        	int postId = rs.getInt("POST_ID");
-		        	String postTitle = rs.getString("POST_TITLE");
-		        	String postText = rs.getString("POST_TEXT");
-		        	String picture = null;;
+		        	int postId = -1;
+		        	String postTitle = "";
+		        	String postText = "";
+		        	String picture;
+		        	if(rs.getString("POST_ID")!=null)
+		        		postId = rs.getInt("POST_ID");
+		        	if(rs.getString("POST_TITLE")!=null)
+		        		postTitle = rs.getString("POST_TITLE");
+		        	if(rs.getString("POST_TEXT")!=null)
+		        		postText = rs.getString("POST_TEXT");
+		        	picture = null;;
 		        	if(rs.getBlob("PICTURE")!=null)
 		        		picture = Base64.getEncoder().encodeToString(rs.getBlob("PICTURE").getBytes(1,(int)rs.getBlob("PICTURE").length()));
 		        	Timestamp datePosted = rs.getTimestamp("DATE_POSTED");
 		        	int likeCount = rs.getInt("LIKE_COUNT");
 		        	boolean likedByUser = rs.getBoolean("LIKED_BY_USER");
-		        	Post p = new Post(postId, postTitle, postText, picture, datePosted, likeCount, likedByUser);
-		        	postListLocal.add(p);
 		        	rowFound = true;
+		        	if(postId != -1) {
+			        	Post p = new Post(postId, postTitle, postText, picture, datePosted, likeCount, likedByUser);
+			        	postListLocal.add(p);
+		        	}
 		        }
 		        if(!rowFound) {
 		        	siteName = "NoRow";
@@ -198,6 +215,7 @@ public class Site extends HttpServlet
 			main.addClass("col-10");
 			CompoundElement list  = new CompoundElement("ul");
 			list.addClasses("list-group", "p-3");
+			int counter = 0;
 			for (Post p : postList) {
 				CompoundElement item  = new CompoundElement("li");
 				item.addClass("list-group-item");
@@ -216,12 +234,12 @@ public class Site extends HttpServlet
 				CompoundElement likeArea  = new CompoundElement("div");
 				likeArea.addClass("row col-12");
 				CompoundElement likes = new CompoundElement("div");
-				likes.setAttribute("style", "line-height:auto;text-align: center; border: 2px dashed black;");
+				likes.setAttribute("style", "line-height:auto;text-align: center;col-12");
 				Element likesSpan = new Element("span");
 				likesSpan.setData("Likes: " + p.getLIKE_COUNT());
-				likesSpan.setAttribute("id","likeCount"+p.getID());
+				likesSpan.setAttribute("name","likeCount"+p.getID());
 				likesSpan.setAttribute("style","display: inline-block;vertical-align: middle;line-height: normal;");
-				likes.addClass("col-2");
+				likes.addClass("col-6");
 				Element likeButton = new Element("input");
 				likeButton.setAttribute("value",(p.LIKED_BY_USER) ? "Unlike":"Like");
 				likeButton.setAttribute("style","float:right");
@@ -230,10 +248,10 @@ public class Site extends HttpServlet
 				likeButton.setAttribute("onclick", 
 						"like("+request.getSession().getAttribute("userId")+","+
 						p.getID()+","+action+",'"+request.getContextPath()+"');");
-				likeButton.addClasses("btn", "btn-outline-primary", "col-2");
+				likeButton.addClasses("btn", "btn-outline-primary", "col-6");
 				likes.addElement(likesSpan);
 				likeArea.addElement(likes);
-				if(loggedIn)likeArea.addElement(likeButton);
+				if(loggedIn)likes.addElement(likeButton);
 				
 				Element img = new Element("img");
 				if(p.getPICTURE() != null) {
@@ -260,9 +278,31 @@ public class Site extends HttpServlet
 					item.addElement(img);
 				}
 				item.addElement(date);
-				item.addElement(likeArea);
+				item.addElement(likesSpan);
 				item.addElement(form);
+				
 				list.addElement(item);
+				
+				
+				CompoundElement cardButton = new CompoundElement("button", "Open Post");
+				cardButton.addClasses("btn-primary","mt-auto", "p-2");
+				cardButton.setAttribute("data-toggle", "modal");
+				cardButton.setAttribute("data-target", "#modal" + counter);
+				
+				item.addElement(cardButton);
+				
+				List<Element> modalFooter = new LinkedList<Element>();
+			
+				List<Element> modalBody = new LinkedList<Element>();
+				modalBody.add(text);
+				if(p.getPICTURE() != null) {
+					modalBody.add(img);
+				}
+				modalBody.add(date);
+				modalBody.add(likeArea);
+				CompoundElement modal = BootstrapTemplates.scrollableModal(p.getPOST_TITLE(), "modal" + counter, modalBody, modalFooter);
+				temp.getBody().addEndElement(modal);
+				counter++;
 			}
 			CompoundElement ad  = new CompoundElement("div");
 			ad.addClasses("col-2");

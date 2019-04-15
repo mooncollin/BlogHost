@@ -66,8 +66,6 @@ public class NewPost extends HttpServlet
 		textGroup.getElementById("postInput").setAttribute("required", "");
 		textGroup.getElementById("postInput").setAttribute("name", "postInput");
 		
-		pictureInput.removeAttribute("class");
-		pictureInput.addClass("form-control-file");
 		submitButton.addClasses("btn", "btn-primary");
 		
 		form.addElement(titleGroup);

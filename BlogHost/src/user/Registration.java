@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -71,7 +72,7 @@ public class Registration extends HttpServlet
 			//query for BlogHostCreators
 			String query = "INSERT INTO BlogHostCreators (ID, USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, AGE, PASSWORD, PROFILE_PICTURE, ADMIN) "
 					+ "VALUES(DEFAULT, ?, ?, ?, ?, ?, md5(?), DEFAULT, DEFAULT)";
-			ps = connection.prepareStatement(query);
+			ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			
 			String uname = request.getParameter("Uname");
 			String fname = request.getParameter("Fname");
@@ -80,7 +81,7 @@ public class Registration extends HttpServlet
 			String age = request.getParameter("Age");
 			String password = request.getParameter("Password");
 			
-			System.out.printf("\n%s %s %s %s %s %s", uname, fname, lname, age, email, password);
+			
 
 			ps.setString(1, uname);
 			ps.setString(2, fname);
@@ -90,14 +91,34 @@ public class Registration extends HttpServlet
 			ps.setString(6, password);
 			
 			int rs = ps.executeUpdate(); // checks if insertion was successful
-			System.out.println(rs);
+			int id = -1;
+			try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	            	id = (int) generatedKeys.getLong(1);
+	            }
+	            else {
+	                throw new SQLException("Creating user failed, no ID obtained.");
+	            }
+	        }
 			
 			if (rs <= 0)
 			{
 				bool = false;
 			}
-			
 			ps.close();
+			
+			query = "INSERT INTO BlogHostSites (ID, CREATOR_ID, SITE_URL, SITE_NAME, CUSTOM_HTML) "
+					+ "VALUES(DEFAULT, ?, DEFAULT, ?, DEFAULT)";
+			ps = connection.prepareStatement(query);
+			ps.setInt(1, id);
+			ps.setString(2, "Need To Change");
+			rs = ps.executeUpdate(); // checks if insertion was successful
+			if (rs <= 0)
+			{
+				bool = false;
+			}
+			ps.close();
+			
 			connection.close();
 		}
 		

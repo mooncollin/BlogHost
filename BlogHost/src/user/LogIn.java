@@ -39,24 +39,8 @@ public class LogIn extends HttpServlet
 		String user = authentication(username, password, request);
 		
 		HttpSession session = request.getSession(true);
+		System.out.println(UserUtils.getUserID(request));
 		
-		MainTemplate temp;
-		
-		if (user != null && user != "")
-		{
-			temp = new MainTemplate(user);
-			String userID = new String("userID");
-		    String userName = new String(user);
-		    session.setAttribute("user", userName);
-		    
-		    //response.setHeader("Refresh", "0; URL=" + request.getContextPath() + "/Site?site="+session.getAttribute("userSiteId"));
-		}
-		
-		else
-		{
-			temp = new MainTemplate();
-			//response.setHeader("Refresh", "0; URL=" + request.getContextPath() + "/HomePage");
-		}
 		response.sendRedirect((String) request.getHeaders("Referer").nextElement());
 		
 		
@@ -79,16 +63,17 @@ public class LogIn extends HttpServlet
 		{
 			connection = DBConnection.getDBConnection();
 			
-			String query = "SELECT * FROM BlogHostCreators as c join BlogHostSites as s on"
+			String query = "SELECT * FROM BlogHostCreators as c left join BlogHostSites as s on"
 					+ " s.Creator_ID = c.id  WHERE USER_NAME=? AND PASSWORD=md5(?)";
 			ps = connection.prepareStatement(query);
 			ps.setString(1, user);
 			ps.setString(2, pass);
-
+			
 			ResultSet rs = ps.executeQuery();
 			
 			if (rs.next())
 			{
+				
 				String un =  new String(rs.getString("USER_NAME").trim());
 				int siteId =  rs.getInt(10);
 				int userId =  rs.getInt("id");

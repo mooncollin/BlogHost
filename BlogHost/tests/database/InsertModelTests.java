@@ -176,7 +176,7 @@ public class InsertModelTests
 	public void BlogHostStoresInsertAndDeleteTest()
 	{
 		BlogHostStores store = new BlogHostStores(
-			1, "shirt", "ew", null);
+			1, "shirt", "ew", null, new BigDecimal(45));
 		inserter(store);
 		deleter(store);
 	}

@@ -21,7 +21,7 @@ public class DBConnection
 	{
 		try
 		{
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			UtilProp.loadProperty();
 			Connection connection = DriverManager.getConnection(getURL(), getUserName(), getPassword());
 			return connection;
