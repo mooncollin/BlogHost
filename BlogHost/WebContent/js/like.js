@@ -27,7 +27,7 @@ function like(reader, post, action, baseUri) {
 		    				 "like("+reader+","+
 			    			 post+","+"1"+",'"+baseUri+"');";
 		    	 var button = document.getElementById('likeButton'+post);
-		    	 button.setAttribute("value", value);
+		    	 button.innerHTML = value;
 		    	 button.setAttribute("onclick", fctCall);
 		    	 
 		    	 var count = document.getElementsByName('likeCount'+post);

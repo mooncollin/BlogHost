@@ -1,6 +1,8 @@
 package main;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Post {
 	public Post(int iD, String pOST_TITLE, String pOST_TEXT, String pICTURE, Timestamp dATE_POSTED, int lIKE_COUNT,
@@ -22,6 +24,7 @@ public class Post {
 	public Timestamp DATE_POSTED;
 	public int LIKE_COUNT;
 	public boolean LIKED_BY_USER;
+	public List<Comment> COMMENT_LIST = new ArrayList<Comment>();
 	
 	public int getID() {
 		return ID;
@@ -64,6 +67,15 @@ public class Post {
 	}
 	public void setPICTURE(String pICTURE) {
 		PICTURE = pICTURE;
+	}
+	public List<Comment> getCOMMENT_LIST() {
+		return COMMENT_LIST;
+	}
+	public void setCOMMENT_LIST(List<Comment> cOMMENT_LIST) {
+		COMMENT_LIST = cOMMENT_LIST;
+	}
+	public void addCOMMENT_LIST(Comment cOMMENT) {
+		COMMENT_LIST.add(cOMMENT);
 	}
 	
 	

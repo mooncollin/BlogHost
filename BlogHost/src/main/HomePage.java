@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mysql.cj.util.StringUtils;
 
 import templates.MainTemplate;
+import user.UserUtils;
 import html.*;
 
 @WebServlet("/HomePage")
@@ -27,7 +28,7 @@ public class HomePage extends HttpServlet {
 	{
 		MainTemplate temp;
 		if(request.getSession().getAttribute("userSiteId") != null){
-			temp = new MainTemplate((String) request.getSession().getAttribute("userName"));
+			temp = new MainTemplate(UserUtils.getUserName(request), UserUtils.getUserSiteID(request));
 		}
 		else {
 			temp = new MainTemplate();

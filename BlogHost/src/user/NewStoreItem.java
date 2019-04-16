@@ -94,7 +94,7 @@ public class NewStoreItem extends HttpServlet
 			return;
 		}
 		
-		Template template = new MainTemplate(UserUtils.getUserName(request)).getCurrentTemplate();
+		Template template = new MainTemplate(UserUtils.getUserName(request), UserUtils.getUserSiteID(request)).getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
 		container.addClasses("container", "mt-5");
 		
