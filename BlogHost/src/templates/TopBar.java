@@ -7,20 +7,31 @@ import org.apache.catalina.connector.Request;
 import forms.Form;
 import html.CompoundElement;
 import html.Element;
+import user.UserUtils;
 
 public class TopBar 
 {
 	private static CompoundElement topBar;
 	private static String username;
+	private static Integer siteID;
 	
 	public TopBar()
 	{
+		siteID = -1;
 		username = null;
 		topBar();
 	}
 	
 	public TopBar(String uname)
 	{
+		siteID = -1;
+		username = uname;
+		topBar();
+	}
+	
+	public TopBar(String uname, Integer siteId)
+	{
+		siteID = siteId;
 		username = uname;
 		topBar();
 	}
@@ -73,7 +84,7 @@ public class TopBar
 		
 		if (username == null)
 		{
-			dropdownLink = createLink("#", "User area", "nav-link dropdown-toggle"); //dropdown for non user
+			dropdownLink = createLink("#", "Login/Register", "nav-link dropdown-toggle"); //dropdown for non user
 		}
 		
 		else
@@ -101,7 +112,18 @@ public class TopBar
 		
 		else
 		{
-		
+			if(siteID != -1 || (Integer) siteID != null) {
+				CompoundElement site = new CompoundElement("a");
+				site.setAttribute("class", "dropdown-item btn");
+				site.setAttribute("href", "Site?site="+siteID);
+				site.setData("My Site");
+				menu.addElement(site);
+				CompoundElement store = new CompoundElement("a");
+				store.setAttribute("class", "dropdown-item btn");
+				store.setAttribute("href", "Store?id="+siteID);
+				store.setData("My Store");
+				menu.addElement(store);
+			}
 			menu.addElement(logoutForm());
 		}
 	}
@@ -128,6 +150,7 @@ public class TopBar
 		
 
 		Form form = new Form();
+		form.setAttribute("id", "logoutForm");
 		
 		
 		//container to hold inputs
@@ -135,7 +158,10 @@ public class TopBar
 		form.setAction("LogOut");
 		form.setMethod("POST");
 		//list of inputs
-		form.addElement(addSubmiButton("LogOut"));
+		Element a = new Element("a", "Logout");
+		a.setAttribute("class", "dropdown-item btn");
+		a.setAttribute("onclick", "document.getElementById('logoutForm').submit()");
+		form.addElement(a);
 	
 		//container for buttons
 		//CompoundElement buttons = new CompoundElement("div");

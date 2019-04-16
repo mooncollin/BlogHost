@@ -35,6 +35,6 @@ body, html
 	margin-top: 50px;
 }
 
-#postText{
+.breakText{
 	word-wrap: break-word;
 }

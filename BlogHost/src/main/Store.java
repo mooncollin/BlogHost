@@ -67,7 +67,7 @@ public class Store extends HttpServlet
 		
 		List<BlogHostStores> items = Model.getAll(BlogHostStores.class, "creator_id=?", creatorID);
 		
-		Template template = new MainTemplate(UserUtils.getUserName(request)).getCurrentTemplate();
+		Template template = new MainTemplate(UserUtils.getUserName(request), UserUtils.getUserSiteID(request)).getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
 		container.addClasses("container", "mt-5");
 		

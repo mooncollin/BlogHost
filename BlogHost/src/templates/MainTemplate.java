@@ -26,6 +26,13 @@ public class MainTemplate
 		basicTemplate();
 	}
 	
+	public MainTemplate(String user, Integer siteId)
+	{
+		createTmp();
+		topBar = new TopBar(user, siteId);
+		botBar = new BotBar();
+		basicTemplate();
+	}
 	public static Template basicTemplate()
 	{
 		tmp.getHead().addStylesheet("css/bootstrap.min.css");
@@ -36,6 +43,7 @@ public class MainTemplate
 		tmp.getBody().addScript("js/popper.min.js");
 		tmp.getBody().addScript("js/bootstrap.min.js");
 		tmp.getBody().addScript("js/like.js");
+		tmp.getBody().addScript("js/comment.js");
 		
 		return tmp;
 	}

@@ -27,14 +27,16 @@ function like(reader, post, action, baseUri) {
 		    				 "like("+reader+","+
 			    			 post+","+"1"+",'"+baseUri+"');";
 		    	 var button = document.getElementById('likeButton'+post);
-		    	 button.setAttribute("value", value);
+		    	 button.innerHTML = value;
 		    	 button.setAttribute("onclick", fctCall);
 		    	 
-		    	 var count = document.getElementById('likeCount'+post);
-		    	 var countPrev = count.innerHTML;
+		    	 var count = document.getElementsByName('likeCount'+post);
+		    	 var countPrev = count[0].innerHTML;
 		    	 countPrev = parseInt(countPrev.split(" ")[1]);
 		    	 var countAft = (action == 1) ? countPrev+1:countPrev-1;
-		    	 count.innerHTML = "Likes: " + countAft;
+		    	 for (var i = 0; i < count.length;i++){	
+		    		 count[i].innerHTML = "Likes: " + countAft;
+		    	 }
 		     }
 	  
 		     else{
