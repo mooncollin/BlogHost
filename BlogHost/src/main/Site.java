@@ -223,23 +223,40 @@ public class Site extends HttpServlet
 			jumbo.addClass("jumbotron");
 			CompoundElement header = new CompoundElement("div");
 			Element profilePicture = new Element("img");
+			//profilePicture.addClass("col-4");
+			profilePicture.setAttribute("style", "border:3px solid black;"
+					+ "max-width:235px;max-height:235px;margin-left:50px");
+			CompoundElement row = new CompoundElement("div");
+			row.addClass("row");
 			if(profilePic != null) {
 				profilePicture.setAttribute("src", "data:image/jpg;base64,"
 				+ profilePic);
-				profilePicture.setAttribute("style", "border:3px solid black;");
+				
 			}
-			Element pSite = new Element("p");
+			else {
+				profilePicture.setAttribute("src", "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+			
+			}
+			row.addElement(profilePicture);
+			Element pSite = new Element("h1");
 			pSite.setData("Welcome to: "+ siteName);
 			
-			Element pCreator = new Element("p");
+			Element pCreator = new Element("h3");
 			pCreator.setData("Creator: "+ userName);
-			
-			Element pPosts = new Element("p");
+			CompoundElement pStore = new CompoundElement("h3");
+			CompoundElement storeLink = new CompoundElement("a");
+			storeLink.setData("Visit my Store!");
+			storeLink.setAttribute("href", "Store?id="+siteId);
+			pStore.addElement(storeLink);
+			Element pPosts = new Element("h5");
 			pPosts.setData(userName + "'s posts: " + postList.size());
-			header.addClasses("w-75", "p-3");
+			header.addClasses("w-75 p-3");
 			header.addElement(pSite);
 			header.addElement(pCreator);
+			header.addElement(pStore);
 			header.addElement(pPosts);
+			row.addElement(new Element("div"));
+			row.addElement(header);
 			if(siteOwner) {
 			CompoundElement newPost = new CompoundElement("a", "Add New Post");
 				newPost.addClasses("btn", "btn-primary", "button");
@@ -247,9 +264,9 @@ public class Site extends HttpServlet
 				header.addElement(newPost);
 			}
 			CompoundElement area  = new CompoundElement("div");
-			area.addClass("row");
+			area.addClass("row p-3");
 			CompoundElement main  = new CompoundElement("div");
-			main.addClass("col-10");
+			//main.addClass("col-10");
 			CompoundElement list  = new CompoundElement("ul");
 			list.addClasses("list-group", "p-3");
 			int counter = 0;
@@ -485,15 +502,15 @@ public class Site extends HttpServlet
 				temp.getBody().addEndElement(modal);
 				counter++;
 			}
-			CompoundElement ad  = new CompoundElement("div");
-			ad.addClasses("col-2");
-			ad.setAttribute("display", "block");
+//			CompoundElement ad  = new CompoundElement("div");
+//			ad.addClasses("col-2");
+//			ad.setAttribute("display", "block");
 			
-			ad.setData("test");
+			//ad.setData("test");
 			main.addElement(list);
 			area.addElement(main);
-			area.addElement(ad);
-			jumbo.addElement(header);
+			//area.addElement(ad);
+			jumbo.addElement(row);
 			jumbo.addElement(area);
 			//jumbo.addElement(ad);
 			cont.addElement(jumbo);
