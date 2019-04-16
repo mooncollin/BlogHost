@@ -266,7 +266,7 @@ public class Site extends HttpServlet
 			CompoundElement area  = new CompoundElement("div");
 			area.addClass("row p-3");
 			CompoundElement main  = new CompoundElement("div");
-			//main.addClass("col-10");
+			main.addClass("col-12");
 			CompoundElement list  = new CompoundElement("ul");
 			list.addClasses("list-group", "p-3");
 			int counter = 0;
