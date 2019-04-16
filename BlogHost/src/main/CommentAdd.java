@@ -48,7 +48,7 @@ public class CommentAdd extends HttpServlet
 		else {
 			List<Comment> list = new ArrayList<Comment>();
 			Connection connection = DBConnection.getDBConnection();
-	        String selectSQL = "Select co.id,co.CREATOR_ID as COMMENTOR_NAME, c2.id as COMMENTOR, COMMENT_TEXT, co.DATE_POSTED as COMMENT_POSTED_DATE " + 
+	        String selectSQL = "Select co.id,c2.USER_NAME as COMMENTOR_NAME, c2.id as COMMENTOR, COMMENT_TEXT, co.DATE_POSTED as COMMENT_POSTED_DATE " + 
 	        		"From bloghost.BlogHostPosts as p " + 
 	        		"left join bloghost.BlogHostComments as co on co.Post_ID = p.id " +
 	        		"left join bloghost.BlogHostCreators as c2  on c2.id = co.CREATOR_ID " + 

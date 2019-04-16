@@ -10,7 +10,7 @@ function comment(reader, post, baseUri) {
 	  alert("Error submitting comment"); 
 	  return;
   }
-  String : str = "reader="+reader+"&post="+post+"&comment="+com;
+  String : str = "reader="+reader+"&post="+post+"&comment="+com.replace(/(?:\r\n|\r|\n)/g, '<br>');;
 	console.log(str);
   // Define what happens on successful data submission
 //  XHR.addEventListener('load', function(event) {

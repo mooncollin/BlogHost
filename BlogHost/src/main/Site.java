@@ -72,7 +72,7 @@ public class Site extends HttpServlet
 	        		"POST_TEXT, PICTURE, p.DATE_POSTED as DATE_POSTED, Count(READER_ID) as LIKE_COUNT, " + 
 	        		"(SELECT 1=1 FROM bloghost.BlogHostLikes " + 
 	        		"WHERE READER_ID = ? AND POST_ID = p.id) as LIKED_BY_USER, " + 
-	        		"co.CREATOR_ID as COMMENTOR_NAME, c2.id as COMMENTOR, COMMENT_TEXT, co.DATE_POSTED as COMMENT_POSTED_DATE " + 
+	        		"c2.USER_NAME as COMMENTOR_NAME, c2.id as COMMENTOR, COMMENT_TEXT, co.DATE_POSTED as COMMENT_POSTED_DATE " + 
 	        		"From bloghost.BlogHostSites as s " + 
 	        		"left join bloghost.BlogHostPosts as p on p.SITE_ID = s.id   " + 
 	        		"left join bloghost.BlogHostLikes as l on l.POST_ID = p.id  " + 
