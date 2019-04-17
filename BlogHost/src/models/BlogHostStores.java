@@ -20,7 +20,7 @@ final public class BlogHostStores extends Model
 	@Column(columnName="creator_id", methodName="setCreatorID", methodParameter=Integer.class)
 	private Integer creator_id;
 	
-	@Column(columnName="item_name", methodName="setItemName", methodParameter=String.class)
+	@Column(length=50, columnName="item_name", methodName="setItemName", methodParameter=String.class)
 	private String item_name;
 	
 	@Column(columnName="item_description", methodName="setItemDescription", methodParameter=String.class)

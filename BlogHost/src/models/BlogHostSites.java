@@ -19,10 +19,10 @@ public final class BlogHostSites extends Model
 	@Column(columnName="creator_id", methodName="setCreatorID", methodParameter=Integer.class)
 	private Integer creator_id;
 	
-	@Column(columnName="site_url", methodName="setSiteURL", methodParameter=String.class)
+	@Column(length=100, columnName="site_url", methodName="setSiteURL", methodParameter=String.class)
 	private String site_url;
 	
-	@Column(columnName="site_name", methodName="setSiteName", methodParameter=String.class)
+	@Column(length=50, columnName="site_name", methodName="setSiteName", methodParameter=String.class)
 	private String site_name;
 	
 	@Column(columnName="custom_html", methodName="setCustomHTML", methodParameter=String.class)
