@@ -2,6 +2,7 @@ package user;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import dbConnection.DBConnection;
 import templates.MainTemplate;
@@ -64,6 +66,7 @@ public class Registration extends HttpServlet
 		Boolean bool = true;
 		Connection connection = null;
 		PreparedStatement ps = null;
+		InputStream inputStream = null;
 		
 		try
 		{
@@ -71,7 +74,7 @@ public class Registration extends HttpServlet
 
 			//query for BlogHostCreators
 			String query = "INSERT INTO BlogHostCreators (ID, USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, AGE, PASSWORD, PROFILE_PICTURE, ADMIN) "
-					+ "VALUES(DEFAULT, ?, ?, ?, ?, ?, md5(?), DEFAULT, DEFAULT)";
+					+ "VALUES(DEFAULT, ?, ?, ?, ?, ?, md5(?), ?, DEFAULT)";
 			ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			
 			String uname = request.getParameter("Uname");
@@ -81,14 +84,24 @@ public class Registration extends HttpServlet
 			String age = request.getParameter("Age");
 			String password = request.getParameter("Password");
 			
+			//image parts
+			Part image;
+			if (request.getPart("profilePicture") != null)
+			{
+				image = request.getPart("profilePicture");
+				inputStream = image.getInputStream();
+			}
+			//endImage parts
 			
-
 			ps.setString(1, uname);
 			ps.setString(2, fname);
 			ps.setString(3, lname);
 			ps.setString(4, email);
 			ps.setString(5, age);
 			ps.setString(6, password);
+			
+			//blob for picture
+			ps.setBlob(7, inputStream);
 			
 			int rs = ps.executeUpdate(); // checks if insertion was successful
 			int id = -1;
@@ -109,9 +122,11 @@ public class Registration extends HttpServlet
 			
 			query = "INSERT INTO BlogHostSites (ID, CREATOR_ID, SITE_URL, SITE_NAME, CUSTOM_HTML) "
 					+ "VALUES(DEFAULT, ?, DEFAULT, ?, DEFAULT)";
+			
+			String site = request.getParameter("Site");
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, id);
-			ps.setString(2, "Need To Change");
+			ps.setString(2, site);
 			rs = ps.executeUpdate(); // checks if insertion was successful
 			if (rs <= 0)
 			{

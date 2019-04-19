@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.connector.Request;
 
+import forms.File;
 import forms.Form;
 import html.CompoundElement;
 import html.Element;
@@ -264,6 +265,8 @@ public class TopBar
 		form.addElement(inputContainer("text", "Enter Email", "Email"));
 		form.addElement(inputContainer("password", "Enter password", "Password"));
 		form.addElement(inputContainer("password", "Repeat Password"));
+		form.addElement(inputContainer("text", "Enter sitename", "Site"));
+		form.addElement(BootstrapTemplates.formGroup("Picture", File.class, "Optional Picture", "profilePicture"));
 		form.addElement(addSubmiButton("Signup"));
 		
 		/*
