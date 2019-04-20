@@ -44,6 +44,7 @@ public class MainTemplate
 		tmp.getBody().addScript("js/bootstrap.min.js");
 		tmp.getBody().addScript("js/like.js");
 		tmp.getBody().addScript("js/comment.js");
+		tmp.getBody().addScript("js/statPost.js");
 		
 		return tmp;
 	}

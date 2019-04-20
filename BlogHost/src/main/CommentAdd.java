@@ -82,6 +82,7 @@ public class CommentAdd extends HttpServlet
 				CompoundElement commentList = new CompoundElement("ul");
 				commentList.addClass("list-group");
 				commentList.setAttribute("style","list-style: none;");
+				commentList.setAttribute("id", "commentList"+post_id);
 				int comCounter = 0;
 				if (list.size() > 0) {
 					

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -58,27 +59,31 @@ public class Site extends HttpServlet
 	    protected String siteName;
 	    protected String profilePic;
 	    protected int siteId;
+	    protected int creatorId;
 	    protected List<Post> postList = new ArrayList<Post>();
 	    protected Map<Integer,Integer> likeList = new HashMap<Integer,Integer>();
 	    
 	    
 	    protected void getInfo(int siteID, HttpServletRequest request) {
 	    	postList.clear();
+	    	likeList.clear();
+	    	siteId=creatorId=-1;
+	    	userName=firstName=lastName=siteName=profilePic = null;
 	    	int readerId = (request.getSession().getAttribute("userId") == null) 
 	    			? -1:(Integer) request.getSession().getAttribute("userId");
 	    	Connection connection = DBConnection.getDBConnection();
-	        String selectSQL = "Select c.USER_NAME, c.FIRST_NAME, c.LAST_NAME, SITE_NAME, " + 
+	        String selectSQL = "Select c.id as CREATOR_ID, c.USER_NAME, c.FIRST_NAME, c.LAST_NAME, SITE_NAME, " + 
 	        		"c.PROFILE_PICTURE, SITE_ID, SITE_NAME,p.id as POST_ID, POST_TITLE, " + 
 	        		"POST_TEXT, PICTURE, p.DATE_POSTED as DATE_POSTED, Count(READER_ID) as LIKE_COUNT, " + 
-	        		"(SELECT 1=1 FROM bloghost.BlogHostLikes " + 
+	        		"(SELECT 1=1 FROM BlogHostLikes " + 
 	        		"WHERE READER_ID = ? AND POST_ID = p.id) as LIKED_BY_USER, " + 
 	        		"c2.USER_NAME as COMMENTOR_NAME, c2.id as COMMENTOR, COMMENT_TEXT, co.DATE_POSTED as COMMENT_POSTED_DATE " + 
-	        		"From bloghost.BlogHostSites as s " + 
-	        		"left join bloghost.BlogHostPosts as p on p.SITE_ID = s.id   " + 
-	        		"left join bloghost.BlogHostLikes as l on l.POST_ID = p.id  " + 
-	        		"left join bloghost.BlogHostCreators as c  on c.id = s.CREATOR_ID " + 
-	        		"left join bloghost.BlogHostComments as co on co.Post_ID = p.id " +
-	        		"left join bloghost.BlogHostCreators as c2  on c2.id = co.CREATOR_ID " + 
+	        		"From BlogHostSites as s " + 
+	        		"left join BlogHostPosts as p on p.SITE_ID = s.id   " + 
+	        		"left join BlogHostLikes as l on l.POST_ID = p.id  " + 
+	        		"left join BlogHostCreators as c  on c.id = s.CREATOR_ID " + 
+	        		"left join BlogHostComments as co on co.Post_ID = p.id " +
+	        		"left join BlogHostCreators as c2  on c2.id = co.CREATOR_ID " + 
 	        		"WHERE s.id  = ? " + 
 	        		"Group BY s.CREATOR_ID, SITE_ID, SITE_NAME,p.id, POST_TITLE, POST_TEXT, PICTURE, p.DATE_POSTED, co.Creator_ID,COMMENT_TEXT,co.DATE_POSTED,c2.id " + 
 	        		"ORDER BY POST_ID DESC;";
@@ -96,6 +101,8 @@ public class Site extends HttpServlet
 		        boolean postMade = false;
 		        while(rs.next()) {
 		        	if(!rowFound) {
+		        		if(rs.getString("CREATOR_ID")!=null)
+		        			creatorId = rs.getInt("CREATOR_ID");
 		        		if(rs.getString("USER_NAME")!=null)
 		        			userName = rs.getString("USER_NAME");
 		        		if(rs.getString("FIRST_NAME")!=null)
@@ -189,7 +196,7 @@ public class Site extends HttpServlet
 			getInfo(Integer.parseInt(request.getParameter("site")),request);
 			boolean siteOwner = false;
 			boolean loggedIn = false;
-			if(request.getSession().getAttribute("userSiteId") != null &&  (int)request.getSession().getAttribute("userSiteId") == siteId) {
+			if(request.getSession().getAttribute("userSiteId") != null &&  (int)request.getSession().getAttribute("userSiteId") == Integer.parseInt(request.getParameter("site"))) {
 				siteOwner = loggedIn = true;
 			}
 			else if(request.getSession().getAttribute("userSiteId") != null){
@@ -215,6 +222,7 @@ public class Site extends HttpServlet
 			else {
 				tempMain = new MainTemplate();
 			}
+			
 			Template temp = tempMain.getCurrentTemplate();
 			CompoundElement cont = new CompoundElement("div");
 			cont.addClass("container");
@@ -224,8 +232,9 @@ public class Site extends HttpServlet
 			CompoundElement header = new CompoundElement("div");
 			Element profilePicture = new Element("img");
 			//profilePicture.addClass("col-4");
+			String max = (siteOwner) ? "250":"200" ;
 			profilePicture.setAttribute("style", "border:3px solid black;"
-					+ "max-width:235px;max-height:235px;margin-left:50px");
+					+ "max-width:"+max+"px;max-height:"+max+"px;margin-left:50px;object-fit: cover;");
 			CompoundElement row = new CompoundElement("div");
 			row.addClass("row");
 			if(profilePic != null) {
@@ -234,7 +243,7 @@ public class Site extends HttpServlet
 				
 			}
 			else {
-				profilePicture.setAttribute("src", "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png");
+				profilePicture.setAttribute("src", "Images/blank-profile-picture.png");
 			
 			}
 			row.addElement(profilePicture);
@@ -246,11 +255,11 @@ public class Site extends HttpServlet
 			CompoundElement pStore = new CompoundElement("h3");
 			CompoundElement storeLink = new CompoundElement("a");
 			storeLink.setData("Visit my Store!");
-			storeLink.setAttribute("href", "Store?id="+siteId);
+			storeLink.setAttribute("href", "Store?id="+creatorId);
 			pStore.addElement(storeLink);
 			Element pPosts = new Element("h5");
 			pPosts.setData(userName + "'s posts: " + postList.size());
-			header.addClasses("w-75 p-3");
+			header.addClasses("w-75 p-3 col-7");
 			header.addElement(pSite);
 			header.addElement(pCreator);
 			header.addElement(pStore);
@@ -306,12 +315,12 @@ public class Site extends HttpServlet
 				
 				
 				CompoundElement likes = new CompoundElement("div");
-				likes.setAttribute("style", "line-height:auto;");
+				likes.setAttribute("style", "line-height:auto;right:-15px");
 				likes.addClass("col-12 row");
 				Element biggerLikeBadge = new Element("h3");
 				Element biggerLikeButton = new Element("h3");
-				biggerLikeBadge.addClass("col-3");
-				biggerLikeButton.addClass("col-3");
+				biggerLikeBadge.addClass("col-6");
+				biggerLikeButton.addClass("col-6");
 				Element likesSpan = new Element("span");
 				likesSpan.setData("Likes: " + p.getLIKE_COUNT());
 				likesSpan.setAttribute("name","likeCount"+p.getID());
@@ -320,8 +329,8 @@ public class Site extends HttpServlet
 			
 				Element likeButton = new Element("span");
 				likeButton.setData((p.LIKED_BY_USER) ? "Unlike":"Like");
-				//likeButton.setAttribute("style","float:right");
 				likeButton.setAttribute("id","likeButton"+p.getID());
+				likeButton.setAttribute("style","float:right;");
 				String action = (p.LIKED_BY_USER) ? "0":"1";
 				likeButton.setAttribute("onclick", 
 						"like("+request.getSession().getAttribute("userId")+","+
@@ -384,7 +393,7 @@ public class Site extends HttpServlet
 				}
 				
 				CompoundElement comments = new CompoundElement("div");
-				comments.setAttribute("style", "line-height:auto;");
+				comments.setAttribute("style", "line-height:auto;right:-15px");
 				comments.addClass("col-12 row");
 				Element biggerCommentBadge = new Element("h3");
 				Element commentInput = new Element("textarea");
@@ -404,7 +413,7 @@ public class Site extends HttpServlet
 				
 				Element commentButton = new Element("span");
 				commentButton.setData("Submit Comment");
-				//likeButton.setAttribute("style","float:right");
+				commentButton.setAttribute("style","float:right");
 				commentButton.setAttribute("id","commentButton"+p.getID());
 				commentButton.setAttribute("onclick", 
 						"comment("+request.getSession().getAttribute("userId")+","+
@@ -432,7 +441,8 @@ public class Site extends HttpServlet
 				Element img = new Element("img");
 				if(p.getPICTURE() != null) {
 					img.setAttribute("src", "data:image/jpg;base64," + p.getPICTURE());
-					img.setAttribute("style","border:3px solid black;max-width:100%;");
+					img.setAttribute("style","border:3px solid black;max-width:100%;display: block;"
+							+ "margin-left: auto; margin-right: auto;");
 				}
 				Form form = new Form();
 				if(siteOwner) {
@@ -455,6 +465,7 @@ public class Site extends HttpServlet
 				
 				if(p.getPICTURE() != null) {
 					item.addElement(img);
+					item.addElement(new Element("br"));
 				}
 				
 				item.addElement(biggerLikeBadge);
@@ -469,6 +480,7 @@ public class Site extends HttpServlet
 				cardButton.addClasses("btn", "btn-primary");
 				cardButton.setAttribute("data-toggle", "modal");
 				cardButton.setAttribute("data-target", "#modal" + counter);
+				cardButton.setAttribute("onclick", "readPost("+p.getID()+",'"+request.getContextPath()+"')");
 				item.addElement(new Element("br"));
 				item.addElement(cardButton);
 				
@@ -496,7 +508,7 @@ public class Site extends HttpServlet
 				List<Element> makeLargeList =  modal.getElementsByClass("modal-dialog");
 				if(!makeLargeList.isEmpty()) {
 					Element makeLarge = makeLargeList.get(0);
-					makeLarge.addClass("modal-lg");
+					makeLarge.addClass("modal-xl");
 				}
 				modal.getElementsByClass("close").get(0).setAttribute("hidden", "hidden");
 				temp.getBody().addEndElement(modal);
@@ -515,8 +527,15 @@ public class Site extends HttpServlet
 			//jumbo.addElement(ad);
 			cont.addElement(jumbo);
 			temp.getBody().addElement(cont);
+			Element ad = new Element("img");
+			Ad adString = new Ad();
+			ad.setAttribute("src", adString.getAd());
 			
-			
+			ad.setAttribute("style","display: block;margin-left: auto;margin-right: auto;");
+			temp.getBody().addElement(ad);
+			temp.getBody().addElement(new Element("br"));
+			temp.getBody().addElement(new Element("br"));
+			temp.getBody().addElement(new Element("br"));
 			response.setContentType("text/html");
 			response.getWriter().println(temp);
 		}

@@ -71,12 +71,12 @@ public class Registration extends HttpServlet
 		try
 		{
 			connection = DBConnection.getDBConnection();
-
+			
 			//query for BlogHostCreators
 			String query = "INSERT INTO BlogHostCreators (ID, USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, AGE, PASSWORD, PROFILE_PICTURE, ADMIN) "
 					+ "VALUES(DEFAULT, ?, ?, ?, ?, ?, md5(?), ?, DEFAULT)";
 			ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			
+
 			String uname = request.getParameter("Uname");
 			String fname = request.getParameter("Fname");
 			String lname = request.getParameter("Lname");
@@ -122,6 +122,7 @@ public class Registration extends HttpServlet
 			
 			query = "INSERT INTO BlogHostSites (ID, CREATOR_ID, SITE_URL, SITE_NAME, CUSTOM_HTML) "
 					+ "VALUES(DEFAULT, ?, DEFAULT, ?, DEFAULT)";
+
 			
 			String site = request.getParameter("Site");
 			ps = connection.prepareStatement(query);
