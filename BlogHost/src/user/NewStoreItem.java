@@ -3,7 +3,6 @@ package user;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -21,9 +20,7 @@ import html.CompoundElement;
 import html.Element;
 import main.HomePage;
 import main.Store;
-import models.BlogHostSites;
 import models.BlogHostStores;
-import models.Model;
 import templates.BootstrapTemplates;
 import templates.MainTemplate;
 import util.Template;
@@ -94,7 +91,7 @@ public class NewStoreItem extends HttpServlet
 			return;
 		}
 		
-		Template template = new MainTemplate(UserUtils.getUserName(request), UserUtils.getUserSiteID(request)).getCurrentTemplate();
+		Template template = new MainTemplate(request).getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
 		container.addClasses("container", "mt-5");
 		

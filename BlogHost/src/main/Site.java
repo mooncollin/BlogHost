@@ -1,45 +1,37 @@
 package main;
 import java.io.IOException;
-import java.sql.Blob;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
 import com.mysql.cj.util.StringUtils;
 
-//import com.mysql.cj.util.StringUtils;
-
 import dbConnection.DBConnection;
 import forms.Form;
-import forms.Input;
-import forms.TextField;
 import html.CompoundElement;
 import html.Element;
+import models.BlogHostCreators;
+import models.BlogHostDonations;
 import models.BlogHostPosts;
+import models.Model;
 import templates.BootstrapTemplates;
 import templates.MainTemplate;
-import user.NewPost;
 import util.Template;
-import utils.StreamUtils;
 
 @WebServlet("/Site")
 public class Site extends HttpServlet 
@@ -217,7 +209,7 @@ public class Site extends HttpServlet
 			//Template temp = MainTemplate.basicTemplate();
 			MainTemplate tempMain;
 			if (loggedIn) {
-				tempMain = new MainTemplate((String) request.getSession().getAttribute("userName"), (int)request.getSession().getAttribute("userSiteId"));
+				tempMain = new MainTemplate(request);
 			}
 			else {
 				tempMain = new MainTemplate();
@@ -271,6 +263,20 @@ public class Site extends HttpServlet
 				newPost.addClasses("btn", "btn-primary", "button");
 				newPost.setAttribute("href", "/BlogHost/NewPost");
 				header.addElement(newPost);
+				
+				CompoundElement donationListButton = new CompoundElement("button", "View Donations");
+				donationListButton.addClasses("btn", "btn-primary", "ml-5");
+				donationListButton.setAttribute("data-toggle", "modal");
+				donationListButton.setAttribute("data-target", "#donations");
+				
+				header.addElement(donationListButton);
+			}
+			else if(loggedIn) {
+				CompoundElement donationButton = new CompoundElement("button", "Donate");
+				donationButton.addClasses("btn", "btn-success", "text-white");
+				donationButton.setAttribute("data-toggle", "modal");
+				donationButton.setAttribute("data-target", "#donationModal");
+				header.addElement(donationButton);
 			}
 			CompoundElement area  = new CompoundElement("div");
 			area.addClass("row p-3");
@@ -510,8 +516,85 @@ public class Site extends HttpServlet
 					Element makeLarge = makeLargeList.get(0);
 					makeLarge.addClass("modal-xl");
 				}
+				
+				if(siteOwner)
+				{
+					List<Element> donationList = new LinkedList<Element>();
+					CompoundElement listOfDonations = new CompoundElement("ul");
+					listOfDonations.setAttribute("id", "donationList");
+					listOfDonations.addClasses("list-group", "list-group-flush", "list-group-striped");
+					
+					List<BlogHostDonations> donations = Model.getAll(BlogHostDonations.class, "creator_id=?", page);
+					BigDecimal total = BigDecimal.ZERO;
+					for(BlogHostDonations donation : donations)
+					{
+						List<BlogHostCreators> creator = Model.getAll(BlogHostCreators.class, "id=?", donation.getSubscriberID());
+						CompoundElement listItem = new CompoundElement("li", "Donation from: " + creator.get(0).getUserName());
+						listItem.addClasses("list-group-item", "pb-4");
+						CompoundElement amountSpan = new CompoundElement("span", "Amount: $" + donation.getAmount().toPlainString());
+						amountSpan.addClass("float-right");
+						
+						listItem.addElement(amountSpan);
+						listOfDonations.addElement(listItem);
+						total = total.add(donation.getAmount());
+					}
+					
+					if(donations.isEmpty())
+					{
+						CompoundElement noDonations = new CompoundElement("div");
+						noDonations.addClasses("jumbtotron", "bg-light");
+						CompoundElement noDonationsHeader = new CompoundElement("h1", "No Donations");
+						noDonationsHeader.addClasses("display-4", "px-3");
+						CompoundElement noDonationsLead = new CompoundElement("p", "You do not have any donations at this time. Don't worry, keep up the good work!");
+						noDonationsLead.addClasses("lead", "px-3", "pb-3");
+						
+						noDonations.addElement(noDonationsHeader);
+						noDonations.addElement(noDonationsLead);
+						donationList.add(noDonations);
+					}
+					else
+					{
+						CompoundElement totalListItem = new CompoundElement("li");
+						totalListItem.addClasses("list-group-item", "pb-4", "mt-1");
+						CompoundElement totalRight = new CompoundElement("span", "Total: $" + total.toPlainString());
+						totalRight.addClass("float-right");
+						totalListItem.addElement(totalRight);
+						listOfDonations.addElement(totalListItem);
+						donationList.add(listOfDonations);
+					}
+					CompoundElement donationListModal = BootstrapTemplates.scrollableModal("Donations", "donations", donationList, new LinkedList<Element>());
+					temp.getBody().addEndElement(donationListModal);
+				}
+				else if(loggedIn)
+				{
+					List<Element> donationBody = new LinkedList<Element>();
+					forms.Number amount = new forms.Number();
+					amount.addClass("form-control");
+					amount.setLabelText("Amount to Donate  ");
+					amount.setValue("1.00");
+					amount.setStep(0.01);
+					amount.setAttribute("id", "donationAmount");
+					amount.setMin(Donation.MIN_DONATION);
+					amount.setMax(Donation.MAX_DONATION);
+					amount.setName("donationAmount");
+					donationBody.add(amount.getLabel());
+					donationBody.add(amount);
+					
+					List<Element> donationFooter = new LinkedList<Element>();
+					CompoundElement donationButton = new CompoundElement("button", "Submit Donation");
+					donationButton.addClasses("btn", "btn-success");
+					donationButton.setAttribute("onclick", "donate(" + page + ")");
+					donationButton.setAttribute("id", "donationButton");
+					donationFooter.add(donationButton);
+					
+					CompoundElement donationModal = BootstrapTemplates.scrollableModal("Donation to " + userName, "donationModal", donationBody, donationFooter);
+					temp.getBody().addEndElement(donationModal);
+					temp.getBody().addScript("js/donation.js");
+				}
+				
 				modal.getElementsByClass("close").get(0).setAttribute("hidden", "hidden");
 				temp.getBody().addEndElement(modal);
+				
 				counter++;
 			}
 //			CompoundElement ad  = new CompoundElement("div");

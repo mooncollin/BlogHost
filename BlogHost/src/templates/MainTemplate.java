@@ -1,7 +1,7 @@
 package templates;
 
 import html.*;
-import forms.*;
+import javax.servlet.http.HttpServletRequest;
 import util.*;
 
 public class MainTemplate 
@@ -18,21 +18,22 @@ public class MainTemplate
 		basicTemplate();
 	}
 	
-	public MainTemplate(String user)
+	public MainTemplate(HttpServletRequest request)
 	{
 		createTmp();
-		topBar = new TopBar(user);
+		topBar = new TopBar(request);
 		botBar = new BotBar();
 		basicTemplate();
 	}
 	
-	public MainTemplate(String user, Integer siteId)
+	public MainTemplate(String user, Integer siteId, Integer userId)
 	{
 		createTmp();
-		topBar = new TopBar(user, siteId);
+		topBar = new TopBar(user, siteId, userId);
 		botBar = new BotBar();
 		basicTemplate();
 	}
+	
 	public static Template basicTemplate()
 	{
 		tmp.getHead().addStylesheet("css/bootstrap.min.css");
