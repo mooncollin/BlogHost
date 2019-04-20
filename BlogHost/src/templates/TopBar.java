@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.connector.Request;
 
+import forms.File;
 import forms.Form;
 import html.CompoundElement;
 import html.Element;
@@ -255,15 +256,17 @@ public class TopBar
 		form.setAction("Registration");
 		form.setMethod("POST");
 		form.setAttribute("class", "container");
-		
+		form.setEnctype("multipart/form-data");
 		//list of inputs
 		form.addElement(inputContainer("text", "Enter Username", "Uname"));
+		form.addElement(inputContainer("text", "Enter Sitename", "Site"));
 		form.addElement(inputContainer("text", "Enter First Name", "Fname"));
 		form.addElement(inputContainer("text", "Enter Last Name", "Lname"));
 		form.addElement(inputContainer("text", "Enter Age", "Age"));
 		form.addElement(inputContainer("text", "Enter Email", "Email"));
 		form.addElement(inputContainer("password", "Enter password", "Password"));
 		form.addElement(inputContainer("password", "Repeat Password"));
+		form.addElement(BootstrapTemplates.formGroup("Profile Picture", File.class, "Optional Picture", "profilePicture"));
 		form.addElement(addSubmiButton("Signup"));
 		
 		/*

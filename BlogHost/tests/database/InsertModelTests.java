@@ -167,8 +167,10 @@ public class InsertModelTests
 	public void BlogHostSitesInsertAndDeleteTest()
 	{
 		BlogHostSites site = new BlogHostSites(
-			1, "urlstuff", "a name", "htmlstuff");
+			1, "urlstuff", "need to make sure this is a very long name so that it may go over the character limit and be truncated correctly",
+			"htmlstuff");
 		inserter(site);
+		assertEquals(site.getSiteName(), "need to make sure this is a very long name so that");
 		deleter(site);
 	}
 	
