@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import html.CompoundElement;
 import templates.MainTemplate;
-import user.UserUtils;
 
 @WebServlet("/About")
 public class About extends HttpServlet 
@@ -32,7 +31,7 @@ public class About extends HttpServlet
 		
 		MainTemplate temp;
 		if(request.getSession().getAttribute("userSiteId") != null){
-			temp = new MainTemplate(UserUtils.getUserName(request), UserUtils.getUserSiteID(request));
+			temp = new MainTemplate(request);
 		}
 		else {
 			temp = new MainTemplate();

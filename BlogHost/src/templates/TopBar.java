@@ -1,9 +1,6 @@
 package templates;
 
-import javax.servlet.http.HttpSession;
-
-import org.apache.catalina.connector.Request;
-
+import javax.servlet.http.HttpServletRequest;
 import forms.File;
 import forms.Form;
 import html.CompoundElement;
@@ -15,26 +12,26 @@ public class TopBar
 	private static CompoundElement topBar;
 	private static String username;
 	private static Integer siteID;
+	private static Integer userID;
 	
 	public TopBar()
 	{
-		siteID = -1;
-		username = null;
-		topBar();
+		this(null, -1, -1);
 	}
 	
-	public TopBar(String uname)
+	public TopBar(String uname, Integer siteId, Integer userId)
 	{
-		siteID = -1;
 		username = uname;
-		topBar();
-	}
-	
-	public TopBar(String uname, Integer siteId)
-	{
 		siteID = siteId;
-		username = uname;
+		userID = userId;
 		topBar();
+	}
+	
+	public TopBar(HttpServletRequest request)
+	{
+		this(UserUtils.getUserName(request),
+			 UserUtils.getUserSiteID(request) == null ? -1 : UserUtils.getUserSiteID(request),
+			 UserUtils.getUserID(request) == null ? -1 : UserUtils.getUserID(request));
 	}
 	
 	public CompoundElement getTopBar()
@@ -121,7 +118,7 @@ public class TopBar
 				menu.addElement(site);
 				CompoundElement store = new CompoundElement("a");
 				store.setAttribute("class", "dropdown-item btn");
-				store.setAttribute("href", "Store?id="+siteID);
+				store.setAttribute("href", "Store?id="+ userID);
 				store.setData("My Store");
 				menu.addElement(store);
 			}

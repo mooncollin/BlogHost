@@ -3,10 +3,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,11 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mysql.cj.util.StringUtils;
-
 import dbConnection.DBConnection;
 import templates.MainTemplate;
-import user.UserUtils;
 import util.Template;
 import html.*;
 
@@ -40,7 +34,7 @@ public class HomePage extends HttpServlet {
 	{
 		MainTemplate tempMain;
 		if(request.getSession().getAttribute("userSiteId") != null){
-			tempMain = new MainTemplate(UserUtils.getUserName(request), UserUtils.getUserSiteID(request));
+			tempMain = new MainTemplate(request);
 		}
 		else {
 			tempMain = new MainTemplate();

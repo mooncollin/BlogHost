@@ -42,3 +42,13 @@ body, html
     width: 90%;
    max-width:1200px;
   }
+  
+ul.list-group.list-group-striped li:nth-of-type(odd)
+{
+    background: #f8f9fa !important;
+}
+
+#donationList.list-group li.list-group-item:hover
+{
+    background: #e1e4ea !important;
+}
