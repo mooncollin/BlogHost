@@ -28,9 +28,11 @@ import html.Element;
 import models.BlogHostCreators;
 import models.BlogHostDonations;
 import models.BlogHostPosts;
+import models.BlogHostSubscriptions;
 import models.Model;
 import templates.BootstrapTemplates;
 import templates.MainTemplate;
+import user.UserUtils;
 import util.Template;
 
 @WebServlet("/Site")
@@ -303,6 +305,25 @@ public class Site extends HttpServlet
 				donationButton.setAttribute("data-toggle", "modal");
 				donationButton.setAttribute("data-target", "#donationModal");
 				header.addElement(donationButton);
+				
+				List<BlogHostSubscriptions> subs = Model.getAll(BlogHostSubscriptions.class, 
+						"subscriber_id=? and creator_id=?", UserUtils.getUserID(request), creatorId);
+				
+				CompoundElement subscribeButton;
+				if(subs.isEmpty())
+				{
+					subscribeButton = new CompoundElement("button", "Subscribe");
+					subscribeButton.addClasses("btn", "btn-info", "ml-3");
+				}
+				else
+				{
+					subscribeButton = new CompoundElement("button", "Subscribed");
+					subscribeButton.addClasses("btn", "btn-outline-secondary", "ml-3");
+				}
+				subscribeButton.setAttribute("onclick", "subscribe(" + creatorId + ")");
+				subscribeButton.setAttribute("id", "subscribeButton");
+				header.addElement(subscribeButton);
+				temp.getBody().addScript("js/subscriptions.js");
 			}
 			CompoundElement area  = new CompoundElement("div");
 			area.addClass("row p-3");
