@@ -42,6 +42,7 @@ public class TopBar
 	private static void topBar()
 	{
 		topBar = new CompoundElement("nav");
+		topBar.setAttribute("id", "topBar");
 		topBar.setAttribute("class",  "navbar navbar-expand-lg navbar-light bg-light");
 		CompoundElement brandLink = createLink("HomePage", "BlogHost"); //logo + link
 		brandLink.setAttribute("class", "navbar-brand");
@@ -50,10 +51,13 @@ public class TopBar
 		//button
 		CompoundElement navButton = new CompoundElement("button");
 		navButton.setAttribute("class", "navbar-toggler");
-		navButton.setAttribute("data-toggle", "#navbarSupportedContent");
+		navButton.setAttribute("type", "button");
+		navButton.setAttribute("data-toggle", "collapse");
+		navButton.setAttribute("data-target", "#navbarSupportedContent");
 		navButton.setAttribute("aria-controls", "navbarSupportedContent");
 		navButton.setAttribute("aria-expanded", "false");
 		navButton.setAttribute("aria-label", "Toggle navigation");
+		navButton.setAttribute("id", "navButton");
 		topBar.addElement(navButton);						//add button
 		
 		//span inside button
@@ -63,17 +67,16 @@ public class TopBar
 		
 		//global navbar content
 		CompoundElement supportedContent = new CompoundElement("div");
-		supportedContent.setAttribute("collapse navbar-collapse", "navbarSupportedContent");
+		supportedContent.addClasses("collapse", "navbar-collapse");
 		supportedContent.setAttribute("id", "navbarSupportedContent");
 		topBar.addElement(supportedContent);		
 		
 		CompoundElement list = new CompoundElement("ul");  //list of elements on navbar
-		list.setAttribute("class", "navbar-nav mr-auto");
-		topBar.addElement(list);							
+		list.setAttribute("class", "navbar-nav mr-auto");						
 		
-		CompoundElement home = createListItem("nav-item active");		//home button
-		home.addElement(createLink("HomePage", "Home", "nav-link"));
-		list.addElement(home);
+//		CompoundElement home = createListItem("nav-item active");		//home button
+//		home.addElement(createLink("HomePage", "Home", "nav-link"));
+//		list.addElement(home);
 		
 		CompoundElement dropdown = createListItem("nav-item dropdown");
 		list.addElement(dropdown);
@@ -124,6 +127,8 @@ public class TopBar
 			}
 			menu.addElement(logoutForm());
 		}
+		
+		supportedContent.addElement(list);
 	}
 	
 	private static CompoundElement modalButton(String id, String data)

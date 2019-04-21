@@ -17,7 +17,7 @@ public final class BlogHostSubscriptions extends Model
 	@Column(columnName="subscriber_id", methodName="setSubscriberID", methodParameter=Integer.class, primaryKey=true)
 	private Integer subscriber_id;
 	
-	@Column(columnName="creator_id", methodName="setCreatorID", methodParameter=Integer.class)
+	@Column(columnName="creator_id", methodName="setCreatorID", methodParameter=Integer.class, primaryKey=true)
 	private Integer creator_id;
 	
 	private Integer subscriber_id_old;
