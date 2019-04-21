@@ -52,3 +52,24 @@ ul.list-group.list-group-striped li:nth-of-type(odd)
 {
     background: #e1e4ea !important;
 }
+
+.sticky-top
+{
+	position: fixed;
+	z-index: 3;
+}
+
+#topBar
+{
+	z-index: 4;
+}
+
+.modal-backdrop
+{
+	z-index: auto;
+}
+
+#subscribeButton
+{
+	display: inline-block;
+}
