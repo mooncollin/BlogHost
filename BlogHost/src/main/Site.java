@@ -44,22 +44,21 @@ public class Site extends HttpServlet
 	    {
 	        super();
 	    }
-
-	    protected String userName;
-	    protected String firstName;
-	    protected String lastName;
-	    protected String siteName;
-	    protected String profilePic;
-	    protected int siteId;
-	    protected int creatorId;
-	    protected List<Post> postList = new ArrayList<Post>();
-	    protected Map<Integer,Integer> likeList = new HashMap<Integer,Integer>();
+	 
 	    
 	    
-	    protected void getInfo(int siteID, HttpServletRequest request) {
-	    	postList.clear();
-	    	likeList.clear();
-	    	siteId=creatorId=-1;
+	    protected List<Object> getInfo(int siteID, HttpServletRequest request) {
+	    	String userName;
+		    String firstName;
+		    String lastName;
+		    String siteName;
+		    String profilePic;
+		    int siteId;
+		    int creatorId;
+		    List<Post> postList = new ArrayList<Post>();
+		    Map<Integer,Integer> likeList = new HashMap<Integer,Integer>();
+		   
+		    siteId=creatorId=-1;
 	    	userName=firstName=lastName=siteName=profilePic = null;
 	    	int readerId = (request.getSession().getAttribute("userId") == null) 
 	    			? -1:(Integer) request.getSession().getAttribute("userId");
@@ -178,6 +177,17 @@ public class Site extends HttpServlet
 	                se.printStackTrace();
 	             }
 	         }
+	        List<Object> ret = new ArrayList<Object>();
+		    ret.add(userName);
+		    ret.add(firstName);
+		    ret.add(lastName);
+		    ret.add(siteName);
+		    ret.add(profilePic);
+		    ret.add(siteId);
+		    ret.add(creatorId);
+		    ret.add(postList);
+		    ret.add(likeList);
+		    return ret;
 	    }
 		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 		{
@@ -185,7 +195,23 @@ public class Site extends HttpServlet
 				response.sendRedirect("/Error/");
 				return;
 			}
-			getInfo(Integer.parseInt(request.getParameter("site")),request);
+			List<Object> objs = getInfo(Integer.parseInt(request.getParameter("site")),request);
+			String userName = (String) objs.get(0);
+		    @SuppressWarnings("unused")
+			String firstName = (String) objs.get(1);
+		    @SuppressWarnings("unused")
+			String lastName = (String) objs.get(2);
+		    String siteName = (String) objs.get(3);
+		    String profilePic = (String) objs.get(4);
+		    @SuppressWarnings("unused")
+			int siteId = (int) objs.get(5);
+		    int creatorId = (int) objs.get(6);
+		    List<Post> postList = null;
+		    if (objs.get(7) != null)
+		    	postList = (List<Post>) objs.get(7);
+		    Map<Integer,Integer> likeList = (Map<Integer,Integer>) objs.get(8);
+			
+			
 			boolean siteOwner = false;
 			boolean loggedIn = false;
 			if(request.getSession().getAttribute("userSiteId") != null &&  (int)request.getSession().getAttribute("userSiteId") == Integer.parseInt(request.getParameter("site"))) {
@@ -224,7 +250,7 @@ public class Site extends HttpServlet
 			CompoundElement header = new CompoundElement("div");
 			Element profilePicture = new Element("img");
 			//profilePicture.addClass("col-4");
-			String max = (siteOwner) ? "250":"200" ;
+			String max = (loggedIn) ? "245":"200" ;
 			profilePicture.setAttribute("style", "border:3px solid black;"
 					+ "max-width:"+max+"px;max-height:"+max+"px;margin-left:50px;object-fit: cover;");
 			CompoundElement row = new CompoundElement("div");

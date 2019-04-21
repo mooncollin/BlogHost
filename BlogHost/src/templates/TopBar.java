@@ -250,10 +250,10 @@ public class TopBar
 		
 		Form form = new Form();
 		wrap.addElement(form);
-		form.setAction("Registration");
+		form.setAction("Registration"); 
 		form.setMethod("POST");
 		form.setAttribute("class", "container");
-		form.setEnctype("multipart/form-data");
+		//form.setEnctype("multipart/form-data");
 		//list of inputs
 		form.addElement(inputContainer("text", "Enter Username", "Uname"));
 		form.addElement(inputContainer("text", "Enter Sitename", "Site"));
