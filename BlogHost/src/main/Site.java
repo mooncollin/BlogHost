@@ -245,8 +245,9 @@ public class Site extends HttpServlet
 			
 			Template temp = tempMain.getCurrentTemplate();
 			CompoundElement cont = new CompoundElement("div");
+			cont.setAttribute("style", "left:75px");//width:calc(~\"100%-75px\")");
 			cont.addClass("container");
-			cont.addClass("col-11");
+			cont.addClass("col-10");
 			CompoundElement jumbo = new CompoundElement("div");
 			jumbo.addClass("jumbotron");
 			CompoundElement header = new CompoundElement("div");
@@ -558,6 +559,7 @@ public class Site extends HttpServlet
 				modalBody.add(commentList);
 				
 				CompoundElement modal = BootstrapTemplates.scrollableModal(titleModal.getHTML()+date.getHTML(), "modal" + counter, modalBody, modalFooter);
+				
 				List<Element> makeLargeList =  modal.getElementsByClass("modal-dialog");
 				if(!makeLargeList.isEmpty()) {
 					Element makeLarge = makeLargeList.get(0);
@@ -635,6 +637,7 @@ public class Site extends HttpServlet
 					donationFooter.add(donationButton);
 					
 					CompoundElement donationModal = BootstrapTemplates.scrollableModal("Donation to " + userName, "donationModal", donationBody, donationFooter);
+					donationModal.setAttribute("style", "z-index:9");
 					temp.getBody().addEndElement(donationModal);
 					temp.getBody().addScript("js/donation.js");
 				}
@@ -661,7 +664,7 @@ public class Site extends HttpServlet
 			Ad adString = new Ad();
 			ad.setAttribute("src", adString.getAd());
 			
-			ad.setAttribute("style","display: block;margin-left: auto;margin-right: auto;");
+			ad.setAttribute("style","display: block;margin: 0 auto; position: relative;left:75px");
 			temp.getBody().addElement(ad);
 			temp.getBody().addElement(new Element("br"));
 			temp.getBody().addElement(new Element("br"));

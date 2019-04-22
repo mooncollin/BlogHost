@@ -93,6 +93,7 @@ public class NewStoreItem extends HttpServlet
 		
 		Template template = new MainTemplate(request).getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
+		container.setAttribute("style", "left:75px");
 		container.addClasses("container", "mt-5");
 		
 		CompoundElement flexRow = new CompoundElement("div");
