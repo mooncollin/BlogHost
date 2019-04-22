@@ -42,9 +42,11 @@ public class HomePage extends HttpServlet {
 		Template temp = tempMain.getCurrentTemplate();
 		response.setContentType("text/html");
 		CompoundElement container = tempMain.createContainer();
+		container.setAttribute("style", "left:75px");
 		container.setData("<center><h1>Welcome to BlogHost</h1></center>");
 		temp.getBody().addElement(container);
 		CompoundElement viewedCreators = tempMain.createContainer();
+		viewedCreators.setAttribute("style", "left:75px");
 		CompoundElement header = new CompoundElement("h2", "Most Viewed Creators");
 		
 		CompoundElement userList = new CompoundElement("ul");
@@ -120,12 +122,11 @@ public class HomePage extends HttpServlet {
              }
          }
 		temp.getBody().addElement(viewedCreators);
-		
 		Element ad = new Element("img");
 		Ad adString = new Ad();
 		ad.setAttribute("src", adString.getAd());
 		
-		ad.setAttribute("style","display: block;margin-left: auto;margin-right: auto;");
+		ad.setAttribute("style","display: block;margin: 0 auto; position: relative;left:75px");
 		temp.getBody().addElement(ad);
 		temp.getBody().addElement(new Element("br"));
 		temp.getBody().addElement(new Element("br"));

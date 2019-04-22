@@ -69,6 +69,7 @@ public class Store extends HttpServlet
 		
 		Template template = new MainTemplate(request).getCurrentTemplate();
 		CompoundElement container = new CompoundElement("div");
+		container.setAttribute("style", "left:75px");
 		container.addClasses("container", "mt-5");
 		
 		CompoundElement flexRow = new CompoundElement("div");
@@ -186,6 +187,16 @@ public class Store extends HttpServlet
 			container.addElement(cardContainer);
 		}
 		template.getBody().addElement(container);
+		
+		Element ad = new Element("img");
+		Ad adString = new Ad();
+		ad.setAttribute("src", adString.getAd());
+		
+		ad.setAttribute("style","display: block;margin: 0 auto; position: relative;left:75px");
+		template.getBody().addElement(ad);
+		template.getBody().addElement(new Element("br"));
+		template.getBody().addElement(new Element("br"));
+		template.getBody().addElement(new Element("br"));
 		response.setContentType("text/html");
 		response.getWriter().print(template);
 	}

@@ -41,8 +41,11 @@ body, html
 .modal-xl {
     width: 90%;
    max-width:1200px;
-  }
+}
   
+.modal-dialog {
+   left: 75px;
+}
 ul.list-group.list-group-striped li:nth-of-type(odd)
 {
     background: #f8f9fa !important;

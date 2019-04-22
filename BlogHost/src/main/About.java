@@ -37,14 +37,17 @@ public class About extends HttpServlet
 			temp = new MainTemplate();
 		}
 		CompoundElement container = new CompoundElement("div");
+		container.setAttribute("style", "left:75px");
 		container.setAttribute("class", "container");
 		CompoundElement jumbotron = new CompoundElement("div");
+		
 		container.setAttribute("class", "jumbotron");
 		container.addElement(jumbotron);
 		jumbotron.setData(info);
 	
 		temp.getCurrentTemplate().getBody().addElement(container);
 
+		
 		response.setContentType("text/html");
 		response.getWriter().println(temp.getCurrentTemplate());
 	}

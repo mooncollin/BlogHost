@@ -80,8 +80,8 @@ public class MainTemplate
 	{
 		CompoundElement mainNav = new CompoundElement("nav");
 		mainNav.setAttribute("id", "sideBar");
-		mainNav.addClasses("float-left","col-xl-1", "col-lg-12", "sticky-top", "border", "shadow");
-		mainNav.setAttribute("style", "background-color: #e9ecef;");
+		mainNav.addClasses("float-left", "sticky-top", "border", "shadow");
+		mainNav.setAttribute("style", "background-color: #e9ecef;height:100%;width:150px;text-align:center");
 		CompoundElement sideBar = new CompoundElement("div");
 		CompoundElement ul = new CompoundElement("ul");
 		ul.addClasses("nav", "flex-row", "d-flex");
@@ -97,7 +97,7 @@ public class MainTemplate
 		
 		CompoundElement subscriberLinksUl = new CompoundElement("div");
 		subscriberLinksUl.addClasses("d-flex", "flex-row", "flex-wrap");
-		
+		subscriberLinksUl.setAttribute("style", "text-align:center");
 		if(siteID != null && siteID != -1)
 		{
 			CompoundElement siteListItem = createSideListItem(Site.URL + "?site=" + siteID,
@@ -116,6 +116,7 @@ public class MainTemplate
 			CompoundElement subscriberListItem = new CompoundElement("li");
 			subscriberListItem.addClasses("nav-item", "d-flex");
 			CompoundElement subscriberText = new CompoundElement("span", "Subscriptions");
+			subscriberListItem.setAttribute("style", "margin-left: auto;margin-right: auto;");
 			subscriberText.addClasses("ml-2", "mb-3");
 			subscriberListItem.addElement(subscriberText);
 			
@@ -133,7 +134,7 @@ public class MainTemplate
 				{
 					CompoundElement subscriberItem = new CompoundElement("li");
 					subscriberItem.addClasses("nav-item", "text-center", "d-flex");
-					
+					subscriberItem.setAttribute("style", "margin-left: auto;margin-right: auto;");
 					Element subscriberImage = new Element("img");
 					subscriberImage.addClass("rounded-circle");
 					if(creator.get(0).getProfilePicture() == null)
@@ -154,6 +155,7 @@ public class MainTemplate
 					subscriberLink.addElement(subscriberImage);
 					subscriberLink.addElement(new Element("br"));
 					CompoundElement subscriberName = new CompoundElement("span", creator.get(0).getUserName());
+					subscriberName.addClass("breakText");
 					subscriberLink.addElement(subscriberName);
 					
 					subscriberItem.addElement(subscriberLink);
