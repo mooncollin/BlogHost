@@ -195,7 +195,9 @@ public class TopBar
 		form.setAttribute("class", "container");
 		
 		//list of inputs
+		form.addElement(inputLabel("Username", "Enter username"));
 		form.addElement(inputContainer("text","Username"));
+		form.addElement(inputLabel("Password", "Enter password"));
 		form.addElement(inputContainer("password","Password"));
 		form.addElement(addSubmiButton("LogIn"));
 	
@@ -258,17 +260,41 @@ public class TopBar
 		form.setAction("Registration"); 
 		form.setMethod("POST");
 		form.setAttribute("class", "container");
-		//form.setEnctype("multipart/form-data");
+		form.setEnctype("multipart/form-data");
+		
 		//list of inputs
-		form.addElement(inputContainer("text", "Enter Username", "Uname"));
-		form.addElement(inputContainer("text", "Enter Sitename", "Site"));
+		form.addElement(inputLabel("Uname", "Username"));
+		form.addElement(inputContainer("text", "Enter Username", "Uname"));		
+		form.addElement(inputLabel("Site", "Site"));
+		form.addElement(inputContainer("text", "Enter Sitename", "Site"));	
+		form.addElement(inputLabel("Fname", "First Name"));
 		form.addElement(inputContainer("text", "Enter First Name", "Fname"));
+		form.addElement(inputLabel("Lname", "Last Name"));
 		form.addElement(inputContainer("text", "Enter Last Name", "Lname"));
+		form.addElement(inputLabel("Age", "Age"));
 		form.addElement(inputContainer("text", "Enter Age", "Age"));
+		form.addElement(inputLabel("Email", "Email"));
 		form.addElement(inputContainer("text", "Enter Email", "Email"));
+		form.addElement(inputLabel("Password", "Password"));
 		form.addElement(inputContainer("password", "Enter password", "Password"));
-		form.addElement(inputContainer("password", "Repeat Password"));
-		form.addElement(BootstrapTemplates.formGroup("Profile Picture", File.class, "Optional Picture", "profilePicture"));
+		form.addElement(inputLabel("Password2", "Repeat password"));
+		form.addElement(inputContainer("password", "Repeat Password", "Password2"));
+
+		//form.addElement(BootstrapTemplates.formGroup("Profile Picture", File.class, "Optional Picture", "profilePicture"));
+		
+		//Form anotherForm = new Form();
+		//form.addElement(anotherForm);
+		CompoundElement anotherDiv = new CompoundElement("div");
+		form.addElement(anotherDiv);
+		anotherDiv.setAttribute("class", "form-group");
+		Element anotherInput = new Element("input");
+		anotherDiv.addElement(anotherInput);
+		anotherInput.setAttribute("type", "file");
+		anotherInput.setAttribute("class", "form-control-file");
+		anotherInput.setAttribute("name", "profilePicture");
+		anotherInput.setAttribute("placeholder", "Optional Picture");
+		
+		
 		form.addElement(addSubmiButton("Signup"));
 		
 		/*
@@ -354,8 +380,18 @@ public class TopBar
 		element.setAttribute("type", type);
 		element.setAttribute("class", "form-control");
 		element.setAttribute("placeholder", placeholder);
+		element.setAttribute("id", name);
 		element.setAttribute("name", name);
 		
 		return element;
+	}
+	
+	private static CompoundElement inputLabel(String fooor, String data)
+	{
+		CompoundElement label = new CompoundElement("label");
+		label.setAttribute("for", fooor);
+		label.setData(data);
+		
+		return label;
 	}
 }
