@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
+import javax.servlet.annotation.MultipartConfig;
 
 import dbConnection.DBConnection;
 import templates.MainTemplate;
@@ -25,6 +26,7 @@ import util.*;
 
 
 @WebServlet("/Registration")
+@MultipartConfig(maxFileSize = 16177215)
 public class Registration extends HttpServlet 
 {
 	private static final long serialVersionUID = 1L;
@@ -61,6 +63,7 @@ public class Registration extends HttpServlet
 		doGet(request, response);
 	}
 	
+	
 	private static boolean register(HttpServletRequest request)
 	{
 		Boolean bool = true;
@@ -85,9 +88,10 @@ public class Registration extends HttpServlet
 			String password = request.getParameter("Password");
 			
 			//image parts
-			Part image;
-			if (request.getPart("profilePicture") != null)
+			Part image = request.getPart("profilePicture");
+			if (image != null)
 			{
+				System.out.println("image");
 				image = request.getPart("profilePicture");
 				inputStream = image.getInputStream();
 			}
@@ -101,7 +105,8 @@ public class Registration extends HttpServlet
 			ps.setString(6, password);
 			
 			//blob for picture
-			ps.setBlob(7, inputStream);
+			if (inputStream != null)
+				ps.setBlob(7, inputStream);
 			
 			int rs = ps.executeUpdate(); // checks if insertion was successful
 			int id = -1;
@@ -125,6 +130,7 @@ public class Registration extends HttpServlet
 
 			
 			String site = request.getParameter("Site");
+			System.out.println(site);
 			ps = connection.prepareStatement(query);
 			ps.setInt(1, id);
 			ps.setString(2, site);
